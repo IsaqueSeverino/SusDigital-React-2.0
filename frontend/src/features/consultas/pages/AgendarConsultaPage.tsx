@@ -1,0 +1,157 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useConsultas } from '../hooks/useConsultas';
+import { medicosService } from '../../../services/endpoints/medicos.service';
+import { pacientesService } from '../../../services/endpoints/pacientes.service';
+import { Medico } from '@/types/medico.types';
+import { Paciente } from '@/types/paciente.types';
+import '../styles/AgendarConsultaPage.css';
+
+const agendarSchema = z.object({
+  pacienteId: z.string().min(1, 'Selecione um paciente'),
+  medicoId: z.string().min(1, 'Selecione um médico'),
+  dataHora: z.string().min(1, 'Selecione data e hora'),
+  descricao: z.string().optional(),
+});
+
+type AgendarFormData = z.infer<typeof agendarSchema>;
+
+const AgendarConsultaPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { create } = useConsultas();
+  const [medicos, setMedicos] = React.useState<Medico[]>([]);
+  const [pacientes, setPacientes] = React.useState<Paciente[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<AgendarFormData>({
+    resolver: zodResolver(agendarSchema),
+  });
+
+  React.useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [medicosData, pacientesData] = await Promise.all([
+          medicosService.getAll(),
+          pacientesService.getAll(),
+        ]);
+        setMedicos(medicosData);
+        setPacientes(pacientesData);
+      } catch (err) {
+        console.error('Erro ao carregar dados:', err);
+      }
+    };
+    loadData();
+  }, []);
+
+  const onSubmit = async (data: AgendarFormData) => {
+    try {
+      setIsLoading(true);
+      await create({
+        pacienteId: data.pacienteId,
+        medicoId: data.medicoId,
+        dataHora: data.dataHora,
+        descricao: data.descricao,
+      });
+      navigate('/consultas');
+    } catch (err) {
+      console.error('Erro ao agendar consulta:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="agendar-consulta-page">
+      <h1>📅 Agendar Consulta</h1>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="agendar-form">
+        <div className="form-group">
+          <label htmlFor="pacienteId">Paciente *</label>
+          <select
+            id="pacienteId"
+            {...register('pacienteId')}
+            className={errors.pacienteId ? 'input-error' : ''}
+          >
+            <option value="">Selecione um paciente</option>
+            {pacientes.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.nome}
+              </option>
+            ))}
+          </select>
+          {errors.pacienteId && (
+            <span className="field-error">{errors.pacienteId.message}</span>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="medicoId">Médico *</label>
+          <select
+            id="medicoId"
+            {...register('medicoId')}
+            className={errors.medicoId ? 'input-error' : ''}
+          >
+            <option value="">Selecione um médico</option>
+            {medicos.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.nome}
+              </option>
+            ))}
+          </select>
+          {errors.medicoId && (
+            <span className="field-error">{errors.medicoId.message}</span>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="dataHora">Data e Hora *</label>
+          <input
+            id="dataHora"
+            type="datetime-local"
+            {...register('dataHora')}
+            className={errors.dataHora ? 'input-error' : ''}
+          />
+          {errors.dataHora && (
+            <span className="field-error">{errors.dataHora.message}</span>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="descricao">Descrição</label>
+          <textarea
+            id="descricao"
+            rows={4}
+            placeholder="Motivo da consulta, sintomas, etc..."
+            {...register('descricao')}
+          />
+        </div>
+
+        <div className="form-actions">
+          <button
+            type="button"
+            onClick={() => navigate('/consultas')}
+            className="btn btn-secondary"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting || isLoading}
+            className="btn btn-primary"
+          >
+            {isSubmitting || isLoading ? 'Agendando...' : 'Agendar'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default AgendarConsultaPage;
