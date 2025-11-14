@@ -2,33 +2,26 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { PrivateRoute } from './PrivateRoute';
 
-// Layouts
 import MainLayout from '@/components/layout/MainLayout';
 
-// Auth Pages
 import LoginPage from '@/features/auth/pages/LoginPage';
 import RegisterPage from '@/features/auth/pages/RegisterPage';
 
-// Pacientes Pages
 import PacientesListPage from '@/features/pacientes/pages/PacientesListPage';
 import PacienteDetailPage from '@/features/pacientes/pages/PacienteDetailPage';
 import PacienteFormPage from '@/features/pacientes/pages/PacienteFormPage';
 
-// Consultas Pages
 import ConsultasListPage from '@/features/consultas/pages/ConsultasListPage';
 import AgendarConsultaPage from '@/features/consultas/pages/AgendarConsultaPage';
 
-// Médicos Pages
 import MedicosListPage from '@/features/medicos/pages/MedicosListPage';
 
-// Prontuários Pages
 import ProntuariosListPage from '@/features/prontuarios/pages/ProntuariosListPage';
 
-// Dashboard
 import DashboardPage from '@/features/dashboard/pages/DashboardPage';
 
 const router = createBrowserRouter([
-  // ===== ROTAS PÚBLICAS =====
+
   {
     path: '/login',
     element: <LoginPage />,
@@ -38,7 +31,6 @@ const router = createBrowserRouter([
     element: <RegisterPage />,
   },
 
-  // ===== ROTAS PROTEGIDAS =====
   {
     element: <PrivateRoute />,
     children: [
@@ -46,13 +38,12 @@ const router = createBrowserRouter([
         path: '/',
         element: <MainLayout />,
         children: [
-          // Dashboard
+        
           {
             index: true,
             element: <DashboardPage />,
           },
 
-          // ===== PACIENTES =====
           {
             path: 'pacientes',
             children: [
@@ -75,7 +66,6 @@ const router = createBrowserRouter([
             ],
           },
 
-          // ===== CONSULTAS =====
           {
             path: 'consultas',
             children: [
@@ -90,7 +80,6 @@ const router = createBrowserRouter([
             ],
           },
 
-          // ===== MÉDICOS (apenas ADMIN) =====
           {
             element: <PrivateRoute allowedRoles={['ADMIN']} />,
             children: [
@@ -101,7 +90,6 @@ const router = createBrowserRouter([
             ],
           },
 
-          // ===== PRONTUÁRIOS =====
           {
             path: 'prontuarios',
             element: <ProntuariosListPage />,
@@ -111,7 +99,6 @@ const router = createBrowserRouter([
     ],
   },
 
-  // ===== FALLBACK =====
   {
     path: '*',
     element: <div>Página não encontrada</div>,

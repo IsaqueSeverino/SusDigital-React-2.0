@@ -100,13 +100,22 @@ class AuthController {
         }
         return { usuario, perfil };
       });
+      const token = JWTUtils.generateToken({
+        userId: result.usuario.id,
+        email: result.usuario.email,
+        tipo: result.usuario.tipo
+      });
+      const refreshToken = '';
       res.status(201).json({
         message: 'Usuário criado com sucesso',
-        usuario: {
+        user: {
           id: result.usuario.id,
           email: result.usuario.email,
-          tipo: result.usuario.tipo
+          tipo: result.usuario.tipo,
+          perfil: result.perfil
         },
+        token,           // omita se não quiser login imediato
+        refreshToken,
         perfil: result.perfil
       });
     } catch (error: any) {
@@ -149,15 +158,17 @@ class AuthController {
         tipo: usuario.tipo
       });
       const perfil = usuario.medico || usuario.paciente || null;
+      const refreshToken = '';
       res.json({
         message: 'Login realizado com sucesso',
-        token,
-        usuario: {
+        user: {
           id: usuario.id,
           email: usuario.email,
           tipo: usuario.tipo,
           perfil
         },
+        token,
+        refreshToken,
         expiresIn: process.env.JWT_EXPIRES_IN || '24h'
       });
     } catch (error) {

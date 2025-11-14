@@ -26,13 +26,11 @@ export const consultasService = {
     await api.delete(`/consultas/${id}`);
   },
 
-  // Buscar consultas por data
   getByDate: async (data: string) => {
     const response = await api.get<Consulta[]>(`/consultas/data/${data}`);
     return response.data;
   },
 
-  // Buscar consultas do paciente
   getByPaciente: async (pacienteId: string) => {
     const response = await api.get<Consulta[]>(`/consultas/paciente/${pacienteId}`);
     return response.data;

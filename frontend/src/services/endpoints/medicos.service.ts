@@ -26,7 +26,6 @@ export const medicosService = {
     await api.delete(`/medicos/${id}`);
   },
 
-  // Buscar por especialidade
   getByEspecialidade: async (especialidade: string) => {
     const response = await api.get<Medico[]>(`/medicos/especialidade/${especialidade}`);
     return response.data;

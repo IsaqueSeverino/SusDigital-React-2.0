@@ -44,7 +44,7 @@ export const RegisterForm: React.FC = () => {
 
       const { senhaConfirm, ...registerData } = data;
       await registerUser(registerData as RegisterData);
-      navigate('/');
+      navigate('/login');
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{ message?: string }>;
       const errorMessage =

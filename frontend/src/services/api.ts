@@ -19,7 +19,7 @@ class ApiService {
   }
 
   private setupInterceptors(): void {
-    // ===== REQUEST INTERCEPTOR =====
+    
     this.axiosInstance.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
         const token = this.getAccessToken();
@@ -31,7 +31,6 @@ class ApiService {
       (error: AxiosError) => Promise.reject(error)
     );
 
-    // ===== RESPONSE INTERCEPTOR =====
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => response,
       async (error: AxiosError) => {
@@ -116,7 +115,6 @@ class ApiService {
     localStorage.removeItem('user');
   }
 
-  // ===== MÉTODOS PÚBLICOS COM TIPOS CORRETOS =====
   public get<T = unknown>(
     url: string,
     config?: AxiosRequestConfig

@@ -9,7 +9,6 @@ interface PrivateRouteProps {
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles }) => {
   const { user, loading, isAuthenticated } = useAuth();
 
-  // Renderiza enquanto carrega
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -18,16 +17,13 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles }) => {
     );
   }
 
-  // Se não está autenticado, redireciona para login
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  // Se há restrição de roles e o usuário não tem permissão
   if (allowedRoles && user && !allowedRoles.includes(user.tipo)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // Se passou em todas as verificações, renderiza as rotas filhas
   return <Outlet />;
 };

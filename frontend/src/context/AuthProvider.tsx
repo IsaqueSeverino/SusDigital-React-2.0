@@ -12,7 +12,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Carrega o usuário do localStorage ao montar o componente
   useEffect(() => {
     loadStoredUser();
   }, []);
