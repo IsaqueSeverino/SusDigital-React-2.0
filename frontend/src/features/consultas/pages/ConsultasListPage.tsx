@@ -21,7 +21,7 @@ const ConsultasListPage: React.FC = () => {
 
       {error && <div className="error-box">{error}</div>}
 
-      {consultas.length === 0 ? (
+      {!Array.isArray(consultas) || consultas.length === 0 ? (
         <div className="empty-state">
           <p>Nenhuma consulta encontrada</p>
         </div>

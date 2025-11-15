@@ -105,7 +105,9 @@ class AuthController {
         email: result.usuario.email,
         tipo: result.usuario.tipo
       });
-      const refreshToken = '';
+      const refreshToken = JWTUtils.generateRefreshToken({
+        userId: result.usuario.id
+      });
       res.status(201).json({
         message: 'Usuário criado com sucesso',
         user: {
@@ -114,7 +116,7 @@ class AuthController {
           tipo: result.usuario.tipo,
           perfil: result.perfil
         },
-        token,           // omita se não quiser login imediato
+        token,
         refreshToken,
         perfil: result.perfil
       });
@@ -158,7 +160,9 @@ class AuthController {
         tipo: usuario.tipo
       });
       const perfil = usuario.medico || usuario.paciente || null;
-      const refreshToken = '';
+      const refreshToken = JWTUtils.generateRefreshToken({
+        userId: usuario.id
+      });
       res.json({
         message: 'Login realizado com sucesso',
         user: {

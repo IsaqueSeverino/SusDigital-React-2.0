@@ -12,6 +12,12 @@ class JWTUtils {
     } as SignOptions);
   }
 
+  static generateRefreshToken(payload: JWTPayload): string {
+    return jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, {
+      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d', // duração maior!
+    } as SignOptions);
+  }
+
   static verifyToken(token: string): JWTPayload {
     return jwt.verify(token, process.env.JWT_SECRET as string) as JWTPayload;
   }

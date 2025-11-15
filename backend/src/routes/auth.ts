@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 import AuthController from '../controllers/authController.js';
 import AuthMiddleware from '../middlewares/auth.js';
+import JWTUtils from '../utils/jwt.js';
 
 /**
  * @swagger
@@ -226,5 +227,78 @@ router.get('/me', AuthMiddleware.authenticate, AuthController.me);
  *               $ref: '#/components/schemas/Error'
  */
 router.post('/change-password', AuthMiddleware.authenticate, AuthController.changePassword);
+
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Renovar token de autenticação (accessToken)
+ *     description: Recebe o refreshToken, valida e retorna um novo accessToken (e, opcionalmente, um novo refreshToken)
+ *     tags: [Autenticação]
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *             required:
+ *               - refreshToken
+ *     responses:
+ *       200:
+ *         description: Novo accessToken gerado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                 refreshToken:
+ *                   type: string
+ *       400:
+ *         description: Refresh token ausente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       401:
+ *         description: Refresh token inválido ou expirado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+router.post('/refresh', async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    return res.status(400).json({ error: 'Refresh token ausente.' });
+  }
+  try {
+    const payload = JWTUtils.verifyToken(refreshToken); 
+    const newAccessToken = JWTUtils.generateToken({
+      userId: payload.userId,
+      email: payload.email,
+      tipo: payload.tipo,
+    });
+    const newRefreshToken = JWTUtils.generateRefreshToken({
+      userId: payload.userId,
+      email: payload.email,
+      tipo: payload.tipo,
+    });
+    res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+  } catch (err) {
+    return res.status(401).json({ error: 'Refresh token inválido ou expirado.' });
+  }
+});
 
 export default router;
