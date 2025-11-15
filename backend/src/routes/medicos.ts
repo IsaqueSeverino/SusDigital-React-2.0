@@ -1,4 +1,6 @@
 import express from 'express';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 const router = express.Router();
 import AuthMiddleware from '../middlewares/auth.js';
 
@@ -67,9 +69,6 @@ router.use(AuthMiddleware.authenticate);
  */
 router.get('/', async (req, res) => {
   try {
-    const { PrismaClient } = require('@prisma/client');
-    const prisma = new PrismaClient();
-
     const medicos = await prisma.medico.findMany({
       select: {
         id: true,
@@ -150,8 +149,6 @@ router.get('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
-    const { PrismaClient } = require('@prisma/client');
-    const prisma = new PrismaClient();
     const { id } = req.params;
 
     const medico = await prisma.medico.findUnique({
