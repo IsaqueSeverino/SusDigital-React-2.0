@@ -14,6 +14,7 @@ import exameRoutes from './routes/exames.js';
 
 import errorHandler from './middlewares/errorHandler.js';
 import logger from './middlewares/logger.js';
+import AuthMiddleware from './middlewares/auth.js';
 
 const app = express();
 
@@ -133,7 +134,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/medicos', medicoRoutes);
 app.use('/api/pacientes', pacienteRoutes);
-app.use('/api/consultas', consultaRoutes);
+app.use('/api/consultas', AuthMiddleware.authenticate , consultaRoutes);
 app.use('/api/prontuarios', prontuarioRoutes);
 app.use('/api/exames', exameRoutes);
 
