@@ -1,9 +1,9 @@
 import { api } from '../api';
-import { Consulta, CreateConsultaData, UpdateConsultaData } from '@/types/consulta.types';
+import { Consulta, ConsultasListResponse, CreateConsultaData, UpdateConsultaData } from '@/types/consulta.types';
 
 export const consultasService = {
-  getAll: async () => {
-    const response = await api.get<Consulta[]>('/consultas');
+  getAll: async (): Promise<ConsultasListResponse> => {
+    const response = await api.get<ConsultasListResponse>('/consultas');
     return response.data;
   },
 

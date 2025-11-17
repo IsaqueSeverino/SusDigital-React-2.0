@@ -30,15 +30,42 @@ const ConsultasListPage: React.FC = () => {
           {consultas.map((consulta) => (
             <div key={consulta.id} className="consulta-item">
               <div className="consulta-header">
-                <span className={`status ${consulta.status.toLowerCase()}`}>
-                  {consulta.status}
-                </span>
+                {consulta.status && (
+                  <span className={`status ${consulta.status.toLowerCase()}`}>
+                    {consulta.status}
+                  </span>
+                )}
               </div>
               <div className="consulta-body">
-                <p><strong>Data:</strong> {new Date(consulta.dataHora).toLocaleDateString('pt-BR')}</p>
-                <p><strong>Hora:</strong> {new Date(consulta.dataHora).toLocaleTimeString('pt-BR')}</p>
-                {consulta.descricao && (
-                  <p><strong>Descrição:</strong> {consulta.descricao}</p>
+                <p>
+                  <strong>Data:</strong>{' '}
+                  {new Date(consulta.dataHora).toLocaleDateString('pt-BR')}
+                </p>
+                <p>
+                  <strong>Hora:</strong>{' '}
+                  {new Date(consulta.dataHora).toLocaleTimeString('pt-BR')}
+                </p>
+                {consulta.motivo && (
+                  <p>
+                    <strong>Motivo:</strong> {consulta.motivo}
+                  </p>
+                )}
+                {consulta.observacoes && (
+                  <p>
+                    <strong>Observações:</strong> {consulta.observacoes}
+                  </p>
+                )}
+                {consulta.medico && (
+                  <p>
+                    <strong>Médico:</strong> {consulta.medico.nome} (
+                    {consulta.medico.especialidade}, CRM: {consulta.medico.crm}
+                    )
+                  </p>
+                )}
+                {consulta.paciente && (
+                  <p>
+                    <strong>Paciente:</strong> {consulta.paciente.nome} (CPF: {consulta.paciente.cpf}, Cartão SUS: {consulta.paciente.cartaoSus})
+                  </p>
                 )}
               </div>
             </div>

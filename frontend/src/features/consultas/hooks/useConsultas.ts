@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { consultasService } from '../../../services/endpoints/consultas.service';
-import { Consulta, CreateConsultaData, UpdateConsultaData } from '@/types/consulta.types';
+import { Consulta, ConsultasListResponse, CreateConsultaData, UpdateConsultaData } from '@/types/consulta.types';
 
 interface UseConsultasReturn {
   consultas: Consulta[];
@@ -25,8 +25,8 @@ export const useConsultas = (): UseConsultasReturn => {
     try {
       setLoading(true);
       setError(null);
-      const data = await consultasService.getAll();
-      setConsultas(data);
+      const data: ConsultasListResponse = await consultasService.getAll();
+      setConsultas(data.consultas ?? []);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar consultas';
       setError(errorMessage);
