@@ -1,5 +1,6 @@
-
 import express from 'express';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 const router = express.Router();
 import AuthMiddleware from '../middlewares/auth.js';
 
@@ -7,10 +8,45 @@ router.use(AuthMiddleware.authenticate);
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     Prontuario:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: ID do prontuário
+ *         pacienteId:
+ *           type: string
+ *           description: ID do paciente
+ *         diagnostico:
+ *           type: string
+ *           description: Diagnóstico médico
+ *         sintomas:
+ *           type: string
+ *           description: Sintomas relatados
+ *         tratamento:
+ *           type: string
+ *           description: Tratamento prescrito
+ *         observacoes:
+ *           type: string
+ *           description: Observações adicionais
+ *       required:
+ *         - pacienteId
+ *         - diagnostico
+ *     Error:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ */
+
+/**
+ * @swagger
  * /api/prontuarios:
  *   get:
  *     summary: Listar prontuários
- *     description: Retorna uma lista de prontuários médicos. Em desenvolvimento - funcionalidade básica disponível
+ *     description: Retorna lista de prontuários com filtro opcional por pacienteId
  *     tags: [Prontuários]
  *     security:
  *       - bearerAuth: []
@@ -20,35 +56,45 @@ router.use(AuthMiddleware.authenticate);
  *         schema:
  *           type: string
  *         description: Filtrar por ID do paciente
- *         example: clxyz1234567890
  *     responses:
  *       200:
- *         description: Rota em desenvolvimento
+ *         description: Lista de prontuários retornada com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Rotas de prontuários - em desenvolvimento
- *                 availableRoutes:
- *                   type: array
- *                   items:
- *                     type: string
- *                   example: ['GET /', 'POST /', 'GET /:id', 'PUT /:id']
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Prontuario'
  *       401:
  *         description: Token inválido ou ausente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erro interno do servidor
  */
-router.get('/', (req, res) => {
-  res.json({ 
-    message: 'Rotas de prontuários - em desenvolvimento',
-    availableRoutes: ['GET /', 'POST /', 'GET /:id', 'PUT /:id', 'DELETE /:id']
-  });
+router.get('/', async (req, res) => {
+  try {
+
+    const prontuarios = await prisma.prontuario.findMany({
+      select: {
+        id: true,
+        data: true,
+        diagnostico: true,
+        sintomas: true,
+        tratamento: true,
+        observacoes: true,
+      },
+
+      orderBy: { data: 'asc' }
+    });
+
+    res.json(prontuarios);
+  } catch (error) {
+    console.error('Erro ao listar prontuários:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
 });
 
 /**
@@ -56,7 +102,7 @@ router.get('/', (req, res) => {
  * /api/prontuarios/{id}:
  *   get:
  *     summary: Obter prontuário específico
- *     description: Retorna os dados de um prontuário específico. Em desenvolvimento
+ *     description: Retorna os dados completos de um prontuário específico pelo seu ID
  *     tags: [Prontuários]
  *     security:
  *       - bearerAuth: []
@@ -67,26 +113,42 @@ router.get('/', (req, res) => {
  *         schema:
  *           type: string
  *         description: ID único do prontuário
- *         example: clxyz1234567890
  *     responses:
  *       200:
- *         description: Dados do prontuário (em desenvolvimento)
+ *         description: Dados do prontuário retornados com sucesso
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Prontuario'
+ *       401:
+ *         description: Token inválido ou ausente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: Prontuário não encontrado
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erro interno do servidor
  */
-router.get('/:id', (req, res) => {
-  res.status(501).json({
-    message: 'Endpoint em desenvolvimento',
-    id: req.params.id
-  });
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const prontuario = await prisma.prontuario.findUnique({
+      where: { id }
+    });
+    if (!prontuario) {
+      return res.status(404).json({ message: 'Prontuário não encontrado' });
+    }
+    res.json(prontuario);
+  } catch (error) {
+    console.error('Erro ao obter prontuário:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
 });
 
 /**
@@ -94,7 +156,7 @@ router.get('/:id', (req, res) => {
  * /api/prontuarios:
  *   post:
  *     summary: Criar novo prontuário
- *     description: Cria um novo prontuário médico. Em desenvolvimento - requer perfil MEDICO ou ADMIN
+ *     description: Cria um novo prontuário médico. Requer perfil MEDICO ou ADMIN
  *     tags: [Prontuários]
  *     security:
  *       - bearerAuth: []
@@ -125,14 +187,37 @@ router.get('/:id', (req, res) => {
  *                 example: Paciente apresenta melhora
  *     responses:
  *       201:
- *         description: Prontuário criado (em desenvolvimento)
- *       501:
- *         description: Endpoint em desenvolvimento
+ *         description: Prontuário criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Prontuario'
+ *       401:
+ *         description: Token inválido ou ausência de permissão
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erro interno do servidor
  */
-router.post('/', (req, res) => {
-  res.status(501).json({
-    message: 'Endpoint em desenvolvimento'
-  });
+router.post('/', async (req, res) => {
+  try {
+    const { pacienteId, diagnostico, sintomas, tratamento, observacoes } = req.body;
+    const novoProntuario = await prisma.prontuario.create({
+      data: {
+        pacienteId,
+        diagnostico,
+        sintomas,
+        tratamento,
+        observacoes
+      }
+    });
+    res.status(201).json(novoProntuario);
+  } catch (error) {
+    console.error('Erro ao criar prontuário:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
 });
 
 /**
@@ -140,7 +225,7 @@ router.post('/', (req, res) => {
  * /api/prontuarios/{id}:
  *   put:
  *     summary: Atualizar prontuário
- *     description: Atualiza um prontuário existente. Em desenvolvimento
+ *     description: Atualiza um prontuário existente pelo ID
  *     tags: [Prontuários]
  *     security:
  *       - bearerAuth: []
@@ -168,15 +253,45 @@ router.post('/', (req, res) => {
  *                 type: string
  *     responses:
  *       200:
- *         description: Prontuário atualizado
- *       501:
- *         description: Endpoint em desenvolvimento
+ *         description: Prontuário atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Prontuario'
+ *       401:
+ *         description: Token inválido ou ausência de permissão
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Prontuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erro interno do servidor
  */
-router.put('/:id', (req, res) => {
-  res.status(501).json({
-    message: 'Endpoint em desenvolvimento',
-    id: req.params.id
-  });
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const prontuarioExistente = await prisma.prontuario.findUnique({ where: { id } });
+    if (!prontuarioExistente) {
+      return res.status(404).json({ message: 'Prontuário não encontrado' });
+    }
+
+    const prontuarioAtualizado = await prisma.prontuario.update({
+      where: { id },
+      data: updateData
+    });
+    res.json(prontuarioAtualizado);
+  } catch (error) {
+    console.error('Erro ao atualizar prontuário:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
 });
 
 /**
@@ -184,7 +299,7 @@ router.put('/:id', (req, res) => {
  * /api/prontuarios/{id}:
  *   delete:
  *     summary: Deletar prontuário
- *     description: Remove um prontuário. Em desenvolvimento - requer perfil ADMIN
+ *     description: Remove um prontuário. Requer perfil ADMIN
  *     tags: [Prontuários]
  *     security:
  *       - bearerAuth: []
@@ -197,15 +312,42 @@ router.put('/:id', (req, res) => {
  *         description: ID do prontuário
  *     responses:
  *       200:
- *         description: Prontuário deletado
- *       501:
- *         description: Endpoint em desenvolvimento
+ *         description: Prontuário deletado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Prontuário deletado com sucesso
+ *       401:
+ *         description: Token inválido ou ausência de permissão
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Prontuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erro interno do servidor
  */
-router.delete('/:id', (req, res) => {
-  res.status(501).json({
-    message: 'Endpoint em desenvolvimento',
-    id: req.params.id
-  });
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const prontuarioDeletado = await prisma.prontuario.delete({
+      where: { id }
+    });
+    res.json({ message: 'Prontuário deletado com sucesso' });
+  } catch (error) {
+
+    console.error('Erro ao deletar prontuário:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
 });
 
 export default router;

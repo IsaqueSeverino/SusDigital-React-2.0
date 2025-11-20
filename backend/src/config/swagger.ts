@@ -388,11 +388,11 @@ const swaggerOptions: Options  = {
       },
       {
         name: 'Prontuários',
-        description: 'Gerenciamento de prontuários médicos (em desenvolvimento)'
+        description: 'Gerenciamento de prontuários médicos'
       },
       {
         name: 'Exames',
-        description: 'Gerenciamento de exames (em desenvolvimento)'
+        description: 'Gerenciamento de exames'
       }
     ]
   },
