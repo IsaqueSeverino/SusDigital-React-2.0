@@ -16,6 +16,8 @@ import AgendarConsultaPage from '@/features/consultas/pages/AgendarConsultaPage'
 
 import MedicosListPage from '@/features/medicos/pages/MedicosListPage';
 
+import UsuariosListPage from '@/features/usuarios/Pages/UsuariosListPage';
+
 import ProntuariosListPage from '@/features/prontuarios/pages/ProntuariosListPage';
 
 import DashboardPage from '@/features/dashboard/pages/DashboardPage';
@@ -86,6 +88,16 @@ const router = createBrowserRouter([
               {
                 path: 'medicos',
                 element: <MedicosListPage />,
+              },
+            ],
+          },
+
+          {
+            element: <PrivateRoute allowedRoles={['ADMIN']} />,
+            children: [
+              {
+                path: 'usuarios',
+                element: <UsuariosListPage />,
               },
             ],
           },

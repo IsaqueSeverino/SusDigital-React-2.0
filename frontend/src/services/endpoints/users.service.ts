@@ -1,5 +1,5 @@
 import { api } from '../api';
-import { Usuario, CreateUsuarioData } from '@/types/user.types';
+import { Usuario } from '@/types/user.types';
 
 export const usuariosService = {
   getAll: async (): Promise<Usuario[]> => {
@@ -9,16 +9,6 @@ export const usuariosService = {
 
   getById: async (id: string): Promise<Usuario> => {
     const response = await api.get<Usuario>(`/usuarios/${id}`);
-    return response.data;
-  },
-
-  create: async (data: CreateUsuarioData): Promise<Usuario> => {
-    const response = await api.post<Usuario>('/usuarios', data);
-    return response.data;
-  },
-
-  update: async (id: string, data: Partial<CreateUsuarioData>): Promise<Usuario> => {
-    const response = await api.put<Usuario>(`/usuarios/${id}`, data);
     return response.data;
   },
 

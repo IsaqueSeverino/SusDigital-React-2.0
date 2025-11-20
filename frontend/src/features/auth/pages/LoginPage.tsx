@@ -12,7 +12,7 @@ const LoginPage: React.FC = () => {
     if (isAuthenticated) {
       navigate('/');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate]);  
 
   return (
     <div className="auth-page login-page">

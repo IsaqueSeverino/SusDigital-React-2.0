@@ -1,4 +1,4 @@
-export interface User {
+export interface Usuario {
   id: string;
   nome: string;
   email: string;
@@ -22,13 +22,13 @@ export interface RegisterData {
   senha: string;
   cpf: string;
   tipo: 'ADMIN' | 'MEDICO' | 'PACIENTE';
-  dataNascimento?: string;
+  dataNascimento?: string; 
   telefone?: string;
   endereco?: string;
 }
 
 export interface AuthResponse {
-  user: User;
+  user: Usuario;
   token: string;
   refreshToken: string;
 }

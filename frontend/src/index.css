@@ -32,7 +32,6 @@ body {
   min-height: 100vh;
 }
 
-/* Scrollbar customizada */
 ::-webkit-scrollbar {
   width: 8px;
 }

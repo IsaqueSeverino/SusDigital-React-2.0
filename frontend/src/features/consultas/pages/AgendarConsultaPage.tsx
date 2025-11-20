@@ -14,7 +14,7 @@ const agendarSchema = z.object({
   pacienteId: z.string().min(1, 'Selecione um paciente'),
   medicoId: z.string().min(1, 'Selecione um médico'),
   dataHora: z.string().min(1, 'Selecione data e hora'),
-  descricao: z.string().optional(),
+  observacoes: z.string().optional(),
 });
 
 type AgendarFormData = z.infer<typeof agendarSchema>;
@@ -57,7 +57,7 @@ const AgendarConsultaPage: React.FC = () => {
         pacienteId: data.pacienteId,
         medicoId: data.medicoId,
         dataHora: data.dataHora,
-        descricao: data.descricao,
+        observacoes: data.observacoes,
       });
       navigate('/consultas');
     } catch (err) {
@@ -124,12 +124,12 @@ const AgendarConsultaPage: React.FC = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="descricao">Descrição</label>
+          <label htmlFor="observacoes">Descrição</label>
           <textarea
-            id="descricao"
+            id="observacoes"
             rows={4}
             placeholder="Motivo da consulta, sintomas, etc..."
-            {...register('descricao')}
+            {...register('observacoes')}
           />
         </div>
 
