@@ -1,14 +1,23 @@
 export interface Usuario {
   id: string;
-  nome: string;
   email: string;
-  cpf: string;
   tipo: 'ADMIN' | 'MEDICO' | 'PACIENTE';
-  dataNascimento?: Date;
-  telefone?: string;
-  endereco?: string;
-  criadoEm?: Date;
-  atualizadoEm?: Date;
+  ativo: boolean;
+  createdAt: string; 
+  medico: MedicoProfile | null;
+  paciente: PacienteProfile | null;
+}
+
+export interface MedicoProfile {
+  nome: string;
+  especialidade: string;
+  crm: string;
+}
+
+export interface PacienteProfile {
+  nome: string;
+  cpf: string;
+  cartaoSus: string;
 }
 
 export interface LoginCredentials {

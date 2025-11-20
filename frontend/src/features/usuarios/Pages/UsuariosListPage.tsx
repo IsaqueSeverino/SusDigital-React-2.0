@@ -29,11 +29,11 @@ const UsuariosListPage: React.FC = () => {
 
   return (
     <div className="usuarios-list-page">
-      <h1>👥 Usuários</h1>
+      <h1>👥 Usuários Gerais</h1>
 
       {error && <div className="error-box">{error}</div>}
 
-      {usuarios.length === 0 ? (
+      {!Array.isArray(usuarios) || usuarios.length === 0 ? (
         <div className="empty-state">
           <p>Nenhum usuário encontrado</p>
         </div>
@@ -42,19 +42,26 @@ const UsuariosListPage: React.FC = () => {
           {usuarios.map((usuario) => (
             <div key={usuario.id} className="usuario-card border rounded p-4 shadow mb-4">
               <div className="card-header mb-2">
-                <h3 className="text-lg font-semibold">{usuario.nome}</h3>
+                <h3 className="text-lg font-semibold">
+                  {usuario.medico?.nome || usuario.paciente?.nome || 'Usuário'}
+                </h3>
                 <span className="text-sm text-gray-600 capitalize">{usuario.tipo.toLowerCase()}</span>
               </div>
               <div className="card-body text-sm text-gray-700 space-y-1">
                 <p><strong>Email:</strong> {usuario.email}</p>
-                <p><strong>CPF:</strong> {usuario.cpf}</p>
-                {usuario.telefone && <p><strong>Telefone:</strong> {usuario.telefone}</p>}
-                {usuario.endereco && <p><strong>Endereço:</strong> {usuario.endereco}</p>}
-                {usuario.dataNascimento && (
-                  <p>
-                    <strong>Data de Nascimento:</strong> {new Date(usuario.dataNascimento).toLocaleDateString()}
-                  </p>
+                {usuario.medico && (
+                  <>
+                    <p><strong>CRM:</strong> {usuario.medico.crm}</p>
+                    <p><strong>Especialidade:</strong> {usuario.medico.especialidade}</p>
+                  </>
                 )}
+                {usuario.paciente && (
+                  <>
+                    <p><strong>CPF:</strong> {usuario.paciente.cpf}</p>
+                    <p><strong>Cartão SUS:</strong> {usuario.paciente.cartaoSus}</p>
+                  </>
+                )}
+
               </div>
             </div>
           ))}

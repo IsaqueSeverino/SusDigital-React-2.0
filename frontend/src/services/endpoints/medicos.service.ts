@@ -1,33 +1,33 @@
 import { api } from '../api';
-import { Usuario, CreateUsuarioData } from '@/types/user.types';
+import { Medico, CreateMedicoData } from '@/types/medico.types';
 
-export const usuariosService = {
-  getAll: async (): Promise<Usuario[]> => {
-    const response = await api.get<Usuario[]>('/usuarios');
+export const medicosService = {
+  getAll: async (): Promise<Medico[]> => {
+    const response = await api.get<Medico[]>('/medicos');
     return response.data;
   },
 
-  getById: async (id: string): Promise<Usuario> => {
-    const response = await api.get<Usuario>(`/usuarios/${id}`);
+  getById: async (id: string): Promise<Medico> => {
+    const response = await api.get<Medico>(`/medicos/${id}`);
     return response.data;
   },
 
-  create: async (data: CreateUsuarioData): Promise<Usuario> => {
-    const response = await api.post<Usuario>('/usuarios', data);
+  create: async (data: CreateMedicoData): Promise<Medico> => {
+    const response = await api.post<Medico>('/medicos', data);
     return response.data;
   },
 
-  update: async (id: string, data: Partial<CreateUsuarioData>): Promise<Usuario> => {
-    const response = await api.put<Usuario>(`/usuarios/${id}`, data);
+  update: async (id: string, data: Partial<CreateMedicoData>): Promise<Medico> => {
+    const response = await api.put<Medico>(`/medicos/${id}`, data);
     return response.data;
   },
 
   delete: async (id: string): Promise<void> => {
-    await api.delete(`/usuarios/${id}`);
+    await api.delete(`/medicos/${id}`);
   },
 
-  getByTipo: async (tipo: string): Promise<Usuario[]> => {
-    const response = await api.get<Usuario[]>(`/usuarios/tipo/${tipo}`);
+  getByEspecialidade: async (especialidade: string): Promise<Medico[]> => {
+    const response = await api.get<Medico[]>(`/medicos/especialidade/${especialidade}`);
     return response.data;
   },
 };
