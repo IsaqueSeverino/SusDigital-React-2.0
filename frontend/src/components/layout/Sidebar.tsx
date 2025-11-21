@@ -48,9 +48,6 @@ const Sidebar: React.FC = () => {
             <Link to="/usuarios" className={`nav-item ${isActive('usuarios')}`}>
               👤 Usuários
             </Link>
-            <Link to="/relatorios" className={`nav-item ${isActive('relatorios')}`}>
-              📊 Relatórios
-            </Link>
           </div>
         )}
       </nav>

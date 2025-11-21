@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
-import './MainLayout.css'; // ou .module.css
+import './MainLayout.css'; 
 
 const MainLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
