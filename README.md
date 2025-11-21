@@ -61,7 +61,7 @@ cd .\backend\
 
 ```
 # Database
-DATABASE_URL="postgresql://postgres.lpfoivzqxzowtaifrtdx:SusDigital1020@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+DATABASE_URL="postgresql://postgres.lpfoivzqxzowtaifrtdx:[senha]@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
 
 # JWT
 JWT_SECRET="chave_secreta_muito_forte_123456"
