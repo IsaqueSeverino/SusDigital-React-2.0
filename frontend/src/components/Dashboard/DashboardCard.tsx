@@ -36,7 +36,7 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
           {icon}
         </div>
 
-        <h3 className={`text-sm font-semibold ${titleColor} uppercase tracking-wide mb-2`}>
+        <h3 className={`text-sm font-bold ${titleColor} uppercase tracking-wide mb-2`}>
           {title}
         </h3>
 
