@@ -1,11 +1,20 @@
 import React from 'react';
 import '../styles/DashboardPage.css'
 import { useDashboard } from '../hooks/useDashboard';
-import { DashboardHeader } from '../../../components/Dashboard/DashboardHeader';
-import { DashboardStats } from '../../../components/Dashboard/DashboardStats';
+import { useConsultas } from '@/features/consultas/hooks/useConsultas';
+import { DashboardHeader } from '../../../components/dashboard/DashboardHeader';
+import { DashboardStats } from '../../../components/dashboard/DashboardStats';
+import { ConsultasList } from '@/components/consultas/ConsultasList';
 
 const DashboardPage: React.FC = () => {
   const { stats, loading, error, refetch } = useDashboard();
+
+  const { consultas, loading: loadingConsultas, error: errorConsultas, refresh } = useConsultas();
+
+  const proximasConsultas = consultas
+    .filter(c => c.status === 'AGENDADA' && new Date(c.dataHora) > new Date())
+    .sort((a, b) => new Date(a.dataHora).getTime() - new Date(b.dataHora).getTime())
+    .slice(0, 5); // Mostra só 5 próximas
 
   if (loading) {
     return (
@@ -60,7 +69,10 @@ const DashboardPage: React.FC = () => {
 
         <div className="bg-white rounded-xl shadow-md p-6 lg:p-8 mt-8 border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">📅 Próximas Consultas</h2>
-          <p className="text-gray-500">Consultas serão listadas aqui</p>
+          <ConsultasList
+            consultas={proximasConsultas}
+            loading={loadingConsultas}
+          />
         </div>
       </div>
     </div>
