@@ -42,47 +42,7 @@ SUS Digital é uma plataforma web completa para gerenciamento de processos de sa
 ## 🗄️ Estrutura de Pastas (Resumo)
 
 ```
-SUS-DIGITAL/
-├── assets/
-├── backend/
-│   ├── node_modules/
-│   ├── prisma/
-│   │   └── schema.prisma
-│   ├── src/
-│   │   ├── config/
-│   │   │   └── swagger.ts
-│   │   ├── controllers/
-│   │   │   ├── authController.ts
-│   │   │   ├── consultaController.ts
-│   │   │   └── usuarioController.ts
-│   │   ├── middlewares/
-│   │   │   ├── auth.ts
-│   │   │   ├── errorHandler.ts
-│   │   │   └── logger.ts
-│   │   ├── routes/
-│   │   │   ├── auth.ts
-│   │   │   ├── consultas.ts
-│   │   │   ├── exames.ts
-│   │   │   ├── medicos.ts
-│   │   │   ├── pacientes.ts
-│   │   │   ├── prontuarios.ts
-│   │   │   └── usuarios.ts
-│   │   ├── utils/
-│   │   │   ├── bcrypt.ts
-│   │   │   ├── jwt.ts
-│   │   │   └── seed.ts
-│   │   ├── app.ts
-│   │   └── server.ts
-│   ├── .env.example
-│   ├── .gitignore
-│   ├── docker-compose.yml
-│   ├── Dockerfile
-│   ├── package-lock.json
-│   ├── package.json
-│   └── tsconfig.json
-├── conteudos/
-├── css/
-└── html/
+Em desenvolvimento
 ```
 
 ## 🚀 Como rodar localmente
@@ -90,8 +50,9 @@ SUS-DIGITAL/
 ### 1. Clone este repositório
 
 ```
-git clone https://github.com/IsaqueSeverino/Sus-Digital.git
-cd Sus-Digital
+git clone https://github.com/IsaqueSeverino/SusDigital-React-2.0
+cd .\frontend\ ou
+cd .\backend\ 
 ```
 
 ### 2. Configure o ambiente backend
@@ -99,11 +60,13 @@ cd Sus-Digital
 #### Configure seu .env em /backend/.env:
 
 ```
-DATABASE_URL="postgresql://[user]%2Elpfoivzqxzowtaifrtdx:[senha]@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+# Database
+DATABASE_URL="postgresql://postgres.lpfoivzqxzowtaifrtdx:SusDigital1020@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
 
 # JWT
-JWT_SECRET=""
+JWT_SECRET="chave_secreta_muito_forte_123456"
 JWT_EXPIRES_IN="24h"
+JWT_REFRESH_SECRET="chave_secreta_refresh_muito_forte_654321"
 
 # Server
 PORT=3000
