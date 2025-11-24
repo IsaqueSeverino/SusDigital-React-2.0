@@ -3,8 +3,8 @@ import { Prontuario, CreateProntuarioData, UpdateProntuarioData } from '@/types/
 
 export const prontuariosService = {
   getAll: async (): Promise<Prontuario[]> => {
-    const response = await api.get<{ prontuarios?: Prontuario[]; data?: Prontuario[] }>('/prontuarios');
-    return response.data.prontuarios ?? response.data.data ?? [];
+    const response = await api.get<Prontuario[]>('/prontuarios');
+    return response.data ?? [];
   },
 
   getById: async (id: string): Promise<Prontuario> => {

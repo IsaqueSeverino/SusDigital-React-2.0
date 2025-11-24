@@ -44,7 +44,7 @@ export const LoginForm: React.FC = () => {
 
       await login(data as LoginCredentials);
       console.log('Login bem-sucedido');
-      navigate('/pacientes');
+      navigate('/');
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{ message?: string }>;
       const errorMessage =

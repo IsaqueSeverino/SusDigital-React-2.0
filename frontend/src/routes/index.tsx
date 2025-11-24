@@ -107,6 +107,7 @@ const router = createBrowserRouter([
             path: 'consultas-medico',
             element: <ConsultasIdMedico />
           },
+          
           {
             path: 'prontuarios',
             element: <ProntuariosListPage />,
