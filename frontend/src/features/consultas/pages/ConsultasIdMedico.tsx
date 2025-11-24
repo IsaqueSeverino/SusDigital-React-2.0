@@ -6,8 +6,14 @@ import '../styles/ConsultasIdMedico.css';
 const ConsultasIdMedico: React.FC = () => {
   const { consultas, loading, error } = useConsultas();
 
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const medicoId = user?.perfil?.id;
+
+  const minhasConsultas = consultas.filter(c => c.medicoId === medicoId);
+
   if (loading) {
-    return <div className="loading">Carregando consultas...</div>;
+    return <div className="loading">Carregando suas consultas...</div>;
   }
 
   return (
@@ -21,13 +27,13 @@ const ConsultasIdMedico: React.FC = () => {
 
       {error && <div className="error-box">{error}</div>}
 
-      {!Array.isArray(consultas) || consultas.length === 0 ? (
+      {minhasConsultas.length === 0 ? (
         <div className="empty-state">
           <p>Nenhuma consulta encontrada</p>
         </div>
       ) : (
         <div className="consultas-list">
-          {consultas.map((consulta) => (
+          {minhasConsultas.map((consulta) => (
             <div key={consulta.id} className="consulta-item">
               <div className="consulta-header">
                 {consulta.status && (
