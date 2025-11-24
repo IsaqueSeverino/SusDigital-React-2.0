@@ -30,7 +30,7 @@ const Sidebar: React.FC = () => {
         {user?.tipo === 'MEDICO' && (
           <div className="nav-section">
             <h3>Médico</h3>
-            <Link to="/minhas-consultas" className={`nav-item ${isActive('minhas-consultas')}`}>
+            <Link to="/consultas-medico" className={`nav-item ${isActive('minhas-consultas')}`}>
               📋 Minhas Consultas
             </Link>
             <Link to="/prontuarios" className={`nav-item ${isActive('prontuarios')}`}>

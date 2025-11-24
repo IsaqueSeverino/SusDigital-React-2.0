@@ -15,6 +15,7 @@ import ConsultasListPage from '@/features/consultas/pages/ConsultasListPage';
 import AgendarConsultaPage from '@/features/consultas/pages/AgendarConsultaPage';
 
 import MedicosListPage from '@/features/medicos/pages/MedicosListPage';
+import ConsultasIdMedico from '@/features/consultas/pages/ConsultasIdMedico';
 
 import UsuariosListPage from '@/features/usuarios/Pages/UsuariosListPage';
 
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
         path: '/',
         element: <MainLayout />,
         children: [
-        
+
           {
             index: true,
             element: <DashboardPage />,
@@ -101,7 +102,11 @@ const router = createBrowserRouter([
               },
             ],
           },
-
+          
+          {
+            path: 'consultas-medico',
+            element: <ConsultasIdMedico />
+          },
           {
             path: 'prontuarios',
             element: <ProntuariosListPage />,
