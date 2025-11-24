@@ -14,7 +14,7 @@ const DashboardPage: React.FC = () => {
   const proximasConsultas = consultas
     .filter(c => c.status === 'AGENDADA' && new Date(c.dataHora) > new Date())
     .sort((a, b) => new Date(a.dataHora).getTime() - new Date(b.dataHora).getTime())
-    .slice(0, 5); // Mostra só 5 próximas
+    .slice(0, 5); 
 
   if (loading) {
     return (

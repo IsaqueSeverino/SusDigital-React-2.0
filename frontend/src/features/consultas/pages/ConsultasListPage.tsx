@@ -21,14 +21,14 @@ const ConsultasListPage: React.FC = () => {
 
       {error && <div className="error-box">{error}</div>}
 
-      {!Array.isArray(consultas) || consultas.length === 0 ? (
+      {consultas.length === 0 ? (
         <div className="empty-state">
           <p>Nenhuma consulta encontrada</p>
         </div>
       ) : (
         <div className="consultas-list">
           {consultas.map((consulta) => (
-            <div key={consulta.id} className="consulta-item">
+            <div   key={consulta.id} className="consulta-item">
               <div className="consulta-header">
                 {consulta.status && (
                   <span className={`status ${consulta.status.toLowerCase()}`}>
@@ -43,7 +43,7 @@ const ConsultasListPage: React.FC = () => {
                 </p>
                 <p>
                   <strong>Hora:</strong>{' '}
-                  {new Date(consulta.dataHora).toLocaleTimeString('pt-BR')}
+                  {new Date(consulta.dataHora).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                 </p>
                 {consulta.motivo && (
                   <p>
@@ -66,6 +66,18 @@ const ConsultasListPage: React.FC = () => {
                   <p>
                     <strong>Paciente:</strong> {consulta.paciente.nome} (CPF: {consulta.paciente.cpf}, Cartão SUS: {consulta.paciente.cartaoSus})
                   </p>
+                )}
+                {consulta.exames && consulta.exames.length > 0 && (
+                  <div className="consulta-exames">
+                    <strong>Exames:</strong>
+                    <ul>
+                      {consulta.exames.map(exame => (
+                        <li key={exame.id}>
+                          {exame.nome} ({exame.tipo}) em {new Date(exame.dataExame).toLocaleDateString('pt-BR')}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
               </div>
             </div>

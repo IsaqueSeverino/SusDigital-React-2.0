@@ -19,17 +19,14 @@ const Sidebar: React.FC = () => {
           <Link to="/" className={`nav-item ${isActive('')}`}>
             📊 Dashboard
           </Link>
-          <Link to="/pacientes" className={`nav-item ${isActive('pacientes')}`}>
-            👥 Pacientes
-          </Link>
-          <Link to="/consultas" className={`nav-item ${isActive('consultas')}`}>
-            📅 Consultas
-          </Link>
         </div>
 
         {user?.tipo === 'MEDICO' && (
           <div className="nav-section">
             <h3>Médico</h3>
+            <Link to="/pacientes" className={`nav-item ${isActive('pacientes')}`}>
+              👥 Pacientes
+            </Link>
             <Link to="/consultas-medico" className={`nav-item ${isActive('minhas-consultas')}`}>
               📋 Minhas Consultas
             </Link>
@@ -42,11 +39,14 @@ const Sidebar: React.FC = () => {
         {user?.tipo === 'ADMIN' && (
           <div className="nav-section">
             <h3>Administração</h3>
+            <Link to="/usuarios" className={`nav-item ${isActive('usuarios')}`}>
+              👤 Usuários
+            </Link>
             <Link to="/medicos" className={`nav-item ${isActive('medicos')}`}>
               👨‍⚕️ Médicos
             </Link>
-            <Link to="/usuarios" className={`nav-item ${isActive('usuarios')}`}>
-              👤 Usuários
+            <Link to="/consultas" className={`nav-item ${isActive('consultas')}`}>
+              📅 Consultas
             </Link>
           </div>
         )}

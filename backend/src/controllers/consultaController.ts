@@ -52,7 +52,8 @@ class ConsultaController {
 
   static async listarConsultas(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { page = '1', limit = '10', status, medicoId, pacienteId, dataInicio, dataFim } = req.query as Record<string, string>;
+      const { page = '1', limit = '100', status, medicoId, pacienteId, dataInicio, dataFim } = req.query as Record<string, string>;
+      console.log('Valor recebido para limit:', limit);
       const where: any = {};
       if (status) where.status = status;
       if (medicoId) where.medicoId = medicoId;
