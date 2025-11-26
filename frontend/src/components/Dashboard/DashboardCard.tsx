@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
 interface DashboardCardProps {
   icon: string;
   title: string;
   value: number;
   label: string;
-  type: 'pacientes' | 'medicos' | 'consultas' | 'prontuarios';
+  type: "pacientes" | "medicos" | "consultas" | "prontuarios";
   bgColor: string;
   borderColor: string;
   iconBg: string;
@@ -20,8 +20,7 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
   bgColor,
   borderColor,
   iconBg,
-  titleColor
-
+  titleColor,
 }) => {
   return (
     <div
@@ -32,11 +31,15 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
       ></div>
 
       <div className="relative z-10">
-        <div className={`${iconBg} w-12 h-12 rounded-lg flex items-center justify-center text-2xl mb-4`}>
+        <div
+          className={`${iconBg} w-12 h-12 rounded-lg flex items-center justify-center text-2xl mb-4`}
+        >
           {icon}
         </div>
 
-        <h3 className={`text-sm font-bold ${titleColor} uppercase tracking-wide mb-2`}>
+        <h3
+          className={`text-sm font-bold ${titleColor} uppercase tracking-wide mb-2`}
+        >
           {title}
         </h3>
 

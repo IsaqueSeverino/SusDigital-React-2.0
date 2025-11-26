@@ -1,20 +1,27 @@
-import React from 'react';
-import '../styles/DashboardPage.css'
-import { useDashboard } from '../hooks/useDashboard';
-import { useConsultas } from '@/features/consultas/hooks/useConsultas';
-import { DashboardHeader } from '../../../components/dashboard/DashboardHeader';
-import { DashboardStats } from '../../../components/dashboard/DashboardStats';
-import { ConsultasList } from '@/components/consultas/ConsultasList';
+import React from "react";
+import "../styles/DashboardPage.css";
+import { useDashboard } from "../hooks/useDashboard";
+import { useConsultas } from "@/features/consultas/hooks/useConsultas";
+import { DashboardHeader } from "../../../components/dashboard/DashboardHeader";
+import { DashboardStats } from "../../../components/dashboard/DashboardStats";
+import { ConsultasList } from "@/components/consultas/ConsultasList";
 
 const DashboardPage: React.FC = () => {
   const { stats, loading, error, refetch } = useDashboard();
 
-  const { consultas, loading: loadingConsultas, error: errorConsultas, refresh } = useConsultas();
+  const {
+    consultas,
+    loading: loadingConsultas,
+    error: errorConsultas,
+    refresh,
+  } = useConsultas();
 
   const proximasConsultas = consultas
-    .filter(c => c.status === 'AGENDADA' && new Date(c.dataHora) > new Date())
-    .sort((a, b) => new Date(a.dataHora).getTime() - new Date(b.dataHora).getTime())
-    .slice(0, 5); 
+    .filter((c) => c.status === "AGENDADA" && new Date(c.dataHora) > new Date())
+    .sort(
+      (a, b) => new Date(a.dataHora).getTime() - new Date(b.dataHora).getTime()
+    )
+    .slice(0, 5);
 
   if (loading) {
     return (
@@ -31,7 +38,9 @@ const DashboardPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">⚠️ Erro ao carregar dashboard</h2>
+          <h2 className="text-2xl font-bold text-red-600 mb-4">
+            Erro ao carregar dashboard
+          </h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={refetch}
@@ -48,8 +57,12 @@ const DashboardPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">⚠️ Nenhum dado disponível</h2>
-          <p className="text-gray-600 mb-6">Não conseguimos carregar as informações do dashboard.</p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Nenhum dado disponível
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Não conseguimos carregar as informações do dashboard.
+          </p>
           <button
             onClick={refetch}
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 transform hover:scale-105"
@@ -68,7 +81,9 @@ const DashboardPage: React.FC = () => {
         <DashboardStats stats={stats} />
 
         <div className="bg-white rounded-xl shadow-md p-6 lg:p-8 mt-8 border border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">📅 Próximas Consultas</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Próximas Consultas
+          </h2>
           <ConsultasList
             consultas={proximasConsultas}
             loading={loadingConsultas}

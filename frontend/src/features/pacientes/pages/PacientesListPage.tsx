@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { usePacientes } from '../hooks/usePacientes';
-import '../styles/PacientesListPage.css';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { usePacientes } from "../hooks/usePacientes";
+import "../styles/PacientesListPage.css";
 
 const PacientesListPage: React.FC = () => {
   const { pacientes, loading, error, search } = usePacientes();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
@@ -20,9 +20,9 @@ const PacientesListPage: React.FC = () => {
   return (
     <div className="pacientes-list-page">
       <div className="page-header">
-        <h1>👥 Pacientes</h1>
+        <h1>Pacientes</h1>
         <Link to="/pacientes/novo" className="btn btn-primary">
-          ➕ Novo Paciente
+          Novo Paciente
         </Link>
       </div>
 
@@ -50,16 +50,37 @@ const PacientesListPage: React.FC = () => {
                 <h3>{paciente.nome}</h3>
               </div>
               <div className="card-body">
-                <p><strong>CPF:</strong> {paciente.cpf}</p>
-                <p><strong>Data de Nascimento:</strong> {new Date(paciente.dataNascimento).toLocaleDateString('pt-BR')}</p>
-                {paciente.telefone && <p><strong>Telefone:</strong> {paciente.telefone}</p>}
-                {paciente.email && <p><strong>Email:</strong> {paciente.email}</p>}
+                <p>
+                  <strong>CPF:</strong> {paciente.cpf}
+                </p>
+                <p>
+                  <strong>Data de Nascimento:</strong>{" "}
+                  {new Date(paciente.dataNascimento).toLocaleDateString(
+                    "pt-BR"
+                  )}
+                </p>
+                {paciente.telefone && (
+                  <p>
+                    <strong>Telefone:</strong> {paciente.telefone}
+                  </p>
+                )}
+                {paciente.email && (
+                  <p>
+                    <strong>Email:</strong> {paciente.email}
+                  </p>
+                )}
               </div>
               <div className="card-footer">
-                <Link to={`/pacientes/${paciente.id}`} className="btn btn-sm btn-info">
+                <Link
+                  to={`/pacientes/${paciente.id}`}
+                  className="btn btn-sm btn-info"
+                >
                   Ver Detalhes
                 </Link>
-                <Link to={`/pacientes/${paciente.id}/editar`} className="btn btn-sm btn-warning">
+                <Link
+                  to={`/pacientes/${paciente.id}/editar`}
+                  className="btn btn-sm btn-warning"
+                >
                   Editar
                 </Link>
               </div>

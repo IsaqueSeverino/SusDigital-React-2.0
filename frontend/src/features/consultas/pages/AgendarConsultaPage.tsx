@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useConsultas } from '../hooks/useConsultas';
-import { medicosService } from '../../../services/endpoints/medicos.service';
-import { pacientesService } from '../../../services/endpoints/pacientes.service';
-import { Medico } from '@/types/medico.types';
-import { Paciente } from '@/types/paciente.types';
-import '../styles/AgendarConsultaPage.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useConsultas } from "../hooks/useConsultas";
+import { medicosService } from "../../../services/endpoints/medicos.service";
+import { pacientesService } from "../../../services/endpoints/pacientes.service";
+import { Medico } from "@/types/medico.types";
+import { Paciente } from "@/types/paciente.types";
+import "../styles/AgendarConsultaPage.css";
 
 const agendarSchema = z.object({
-  pacienteId: z.string().min(1, 'Selecione um paciente'),
-  medicoId: z.string().min(1, 'Selecione um médico'),
-  dataHora: z.string().min(1, 'Selecione data e hora'),
+  pacienteId: z.string().min(1, "Selecione um paciente"),
+  medicoId: z.string().min(1, "Selecione um médico"),
+  dataHora: z.string().min(1, "Selecione data e hora"),
   observacoes: z.string().optional(),
 });
 
@@ -44,7 +44,7 @@ const AgendarConsultaPage: React.FC = () => {
         setMedicos(medicosData);
         setPacientes(pacientesData);
       } catch (err) {
-        console.error('Erro ao carregar dados:', err);
+        console.error("Erro ao carregar dados:", err);
       }
     };
     loadData();
@@ -59,9 +59,9 @@ const AgendarConsultaPage: React.FC = () => {
         dataHora: data.dataHora,
         observacoes: data.observacoes,
       });
-      navigate('/consultas');
+      navigate("/consultas");
     } catch (err) {
-      console.error('Erro ao agendar consulta:', err);
+      console.error("Erro ao agendar consulta:", err);
     } finally {
       setIsLoading(false);
     }
@@ -69,15 +69,15 @@ const AgendarConsultaPage: React.FC = () => {
 
   return (
     <div className="agendar-consulta-page">
-      <h1>📅 Agendar Consulta</h1>
+      <h1>Agendar Consulta</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="agendar-form">
         <div className="form-group">
           <label htmlFor="pacienteId">Paciente *</label>
           <select
             id="pacienteId"
-            {...register('pacienteId')}
-            className={errors.pacienteId ? 'input-error' : ''}
+            {...register("pacienteId")}
+            className={errors.pacienteId ? "input-error" : ""}
           >
             <option value="">Selecione um paciente</option>
             {pacientes.map((p) => (
@@ -95,8 +95,8 @@ const AgendarConsultaPage: React.FC = () => {
           <label htmlFor="medicoId">Médico *</label>
           <select
             id="medicoId"
-            {...register('medicoId')}
-            className={errors.medicoId ? 'input-error' : ''}
+            {...register("medicoId")}
+            className={errors.medicoId ? "input-error" : ""}
           >
             <option value="">Selecione um médico</option>
             {medicos.map((m) => (
@@ -115,8 +115,8 @@ const AgendarConsultaPage: React.FC = () => {
           <input
             id="dataHora"
             type="datetime-local"
-            {...register('dataHora')}
-            className={errors.dataHora ? 'input-error' : ''}
+            {...register("dataHora")}
+            className={errors.dataHora ? "input-error" : ""}
           />
           {errors.dataHora && (
             <span className="field-error">{errors.dataHora.message}</span>
@@ -129,14 +129,14 @@ const AgendarConsultaPage: React.FC = () => {
             id="observacoes"
             rows={4}
             placeholder="Motivo da consulta, sintomas, etc..."
-            {...register('observacoes')}
+            {...register("observacoes")}
           />
         </div>
 
         <div className="form-actions">
           <button
             type="button"
-            onClick={() => navigate('/consultas')}
+            onClick={() => navigate("/consultas")}
             className="btn btn-secondary"
           >
             Cancelar
@@ -146,7 +146,7 @@ const AgendarConsultaPage: React.FC = () => {
             disabled={isSubmitting || isLoading}
             className="btn btn-primary"
           >
-            {isSubmitting || isLoading ? 'Agendando...' : 'Agendar'}
+            {isSubmitting || isLoading ? "Agendando..." : "Agendar"}
           </button>
         </div>
       </form>

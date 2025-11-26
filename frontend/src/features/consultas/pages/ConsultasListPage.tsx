@@ -1,7 +1,7 @@
-import React from 'react';
-import { useConsultas } from '../hooks/useConsultas';
-import { Link } from 'react-router-dom';
-import '../styles/ConsultasList.css';
+import React from "react";
+import { useConsultas } from "../hooks/useConsultas";
+import { Link } from "react-router-dom";
+import "../styles/ConsultasList.css";
 
 const ConsultasListPage: React.FC = () => {
   const { consultas, loading, error } = useConsultas();
@@ -13,9 +13,9 @@ const ConsultasListPage: React.FC = () => {
   return (
     <div className="consultas-list-page">
       <div className="page-header">
-        <h1>📅 Consultas</h1>
+        <h1>Consultas</h1>
         <Link to="/consultas/agendar" className="btn btn-primary">
-          ➕ Agendar Consulta
+          Agendar Consulta
         </Link>
       </div>
 
@@ -28,7 +28,7 @@ const ConsultasListPage: React.FC = () => {
       ) : (
         <div className="consultas-list">
           {consultas.map((consulta) => (
-            <div   key={consulta.id} className="consulta-item">
+            <div key={consulta.id} className="consulta-item">
               <div className="consulta-header">
                 {consulta.status && (
                   <span className={`status ${consulta.status.toLowerCase()}`}>
@@ -38,12 +38,15 @@ const ConsultasListPage: React.FC = () => {
               </div>
               <div className="consulta-body">
                 <p>
-                  <strong>Data:</strong>{' '}
-                  {new Date(consulta.dataHora).toLocaleDateString('pt-BR')}
+                  <strong>Data:</strong>{" "}
+                  {new Date(consulta.dataHora).toLocaleDateString("pt-BR")}
                 </p>
                 <p>
-                  <strong>Hora:</strong>{' '}
-                  {new Date(consulta.dataHora).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  <strong>Hora:</strong>{" "}
+                  {new Date(consulta.dataHora).toLocaleTimeString("pt-BR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </p>
                 {consulta.motivo && (
                   <p>
@@ -58,22 +61,26 @@ const ConsultasListPage: React.FC = () => {
                 {consulta.medico && (
                   <p>
                     <strong>Médico:</strong> {consulta.medico.nome} (
-                    {consulta.medico.especialidade}, CRM: {consulta.medico.crm}
-                    )
+                    {consulta.medico.especialidade}, CRM: {consulta.medico.crm})
                   </p>
                 )}
                 {consulta.paciente && (
                   <p>
-                    <strong>Paciente:</strong> {consulta.paciente.nome} (CPF: {consulta.paciente.cpf}, Cartão SUS: {consulta.paciente.cartaoSus})
+                    <strong>Paciente:</strong> {consulta.paciente.nome} (CPF:{" "}
+                    {consulta.paciente.cpf}, Cartão SUS:{" "}
+                    {consulta.paciente.cartaoSus})
                   </p>
                 )}
                 {consulta.exames && consulta.exames.length > 0 && (
                   <div className="consulta-exames">
                     <strong>Exames:</strong>
                     <ul>
-                      {consulta.exames.map(exame => (
+                      {consulta.exames.map((exame) => (
                         <li key={exame.id}>
-                          {exame.nome} ({exame.tipo}) em {new Date(exame.dataExame).toLocaleDateString('pt-BR')}
+                          {exame.nome} ({exame.tipo}) em{" "}
+                          {new Date(exame.dataExame).toLocaleDateString(
+                            "pt-BR"
+                          )}
                         </li>
                       ))}
                     </ul>

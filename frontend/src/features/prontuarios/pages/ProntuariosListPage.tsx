@@ -1,21 +1,20 @@
-import React from 'react';
-import { useProntuarios } from '../hooks/useProntuarios';
-import '../styles/ProntuariosListPage.css';
+import React from "react";
+import { useProntuarios } from "../hooks/useProntuarios";
+import "../styles/ProntuariosListPage.css";
 
 const ProntuariosListPage: React.FC = () => {
-
   const { prontuarios, loading, error } = useProntuarios();
 
   if (loading) {
     return <div className="loading">Carregando prontuários...</div>;
   }
 
-  console.log(prontuarios)
+  console.log(prontuarios);
 
   return (
     <div className="prontuarios-list-page">
       <div className="page-header">
-        <h1>📄 Prontuários</h1>
+        <h1>Prontuários</h1>
       </div>
 
       {error && <div className="error-box">{error}</div>}
@@ -28,11 +27,10 @@ const ProntuariosListPage: React.FC = () => {
         <div className="consultas-list">
           {prontuarios.map((prontuario) => (
             <div key={prontuario.id} className="consulta-item">
-
               <div className="consulta-body">
                 <p>
-                  <strong>Data:</strong>{' '}
-                  {new Date(prontuario.data).toLocaleDateString('pt-BR')}
+                  <strong>Data:</strong>{" "}
+                  {new Date(prontuario.data).toLocaleDateString("pt-BR")}
                 </p>
 
                 {prontuario.diagnostico && (
@@ -47,9 +45,7 @@ const ProntuariosListPage: React.FC = () => {
                 )}
                 {prontuario.tratamento && (
                   <p>
-                    <strong>Tratamento:</strong> {prontuario.tratamento} (
-
-                    )
+                    <strong>Tratamento:</strong> {prontuario.tratamento} ( )
                   </p>
                 )}
                 {prontuario.observacoes && (
@@ -59,10 +55,11 @@ const ProntuariosListPage: React.FC = () => {
                 )}
                 {prontuario.paciente && (
                   <p>
-                    <strong>Paciente:</strong> {prontuario.paciente.nome} (CPF: {prontuario.paciente.cpf}, Cartão SUS: {prontuario.paciente.cartaoSus})
+                    <strong>Paciente:</strong> {prontuario.paciente.nome} (CPF:{" "}
+                    {prontuario.paciente.cpf}, Cartão SUS:{" "}
+                    {prontuario.paciente.cartaoSus})
                   </p>
                 )}
-
               </div>
             </div>
           ))}

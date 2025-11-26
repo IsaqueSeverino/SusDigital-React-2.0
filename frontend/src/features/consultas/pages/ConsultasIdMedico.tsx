@@ -1,16 +1,16 @@
-import React from 'react';
-import { useConsultas } from '../hooks/useConsultas';
-import { Link } from 'react-router-dom';
-import '../styles/ConsultasIdMedico.css';
+import React from "react";
+import { useConsultas } from "../hooks/useConsultas";
+import { Link } from "react-router-dom";
+import "../styles/ConsultasIdMedico.css";
 
 const ConsultasIdMedico: React.FC = () => {
   const { consultas, loading, error } = useConsultas();
 
-  const userStr = localStorage.getItem('user');
+  const userStr = localStorage.getItem("user");
   const user = userStr ? JSON.parse(userStr) : null;
   const medicoId = user?.perfil?.id;
 
-  const minhasConsultas = consultas.filter(c => c.medicoId === medicoId);
+  const minhasConsultas = consultas.filter((c) => c.medicoId === medicoId);
 
   if (loading) {
     return <div className="loading">Carregando suas consultas...</div>;
@@ -19,9 +19,9 @@ const ConsultasIdMedico: React.FC = () => {
   return (
     <div className="consultas-list-page">
       <div className="page-header">
-        <h1>📅 Minhas Consultas</h1>
+        <h1>Minhas Consultas</h1>
         <Link to="/consultas/agendar" className="btn btn-primary">
-          ➕ Agendar Consulta
+          Agendar Consulta
         </Link>
       </div>
 
@@ -44,12 +44,12 @@ const ConsultasIdMedico: React.FC = () => {
               </div>
               <div className="consulta-body">
                 <p>
-                  <strong>Data:</strong>{' '}
-                  {new Date(consulta.dataHora).toLocaleDateString('pt-BR')}
+                  <strong>Data:</strong>{" "}
+                  {new Date(consulta.dataHora).toLocaleDateString("pt-BR")}
                 </p>
                 <p>
-                  <strong>Hora:</strong>{' '}
-                  {new Date(consulta.dataHora).toLocaleTimeString('pt-BR')}
+                  <strong>Hora:</strong>{" "}
+                  {new Date(consulta.dataHora).toLocaleTimeString("pt-BR")}
                 </p>
                 {consulta.motivo && (
                   <p>
@@ -64,13 +64,14 @@ const ConsultasIdMedico: React.FC = () => {
                 {consulta.medico && (
                   <p>
                     <strong>Médico:</strong> {consulta.medico.nome} (
-                    {consulta.medico.especialidade}, CRM: {consulta.medico.crm}
-                    )
+                    {consulta.medico.especialidade}, CRM: {consulta.medico.crm})
                   </p>
                 )}
                 {consulta.paciente && (
                   <p>
-                    <strong>Paciente:</strong> {consulta.paciente.nome} (CPF: {consulta.paciente.cpf}, Cartão SUS: {consulta.paciente.cartaoSus})
+                    <strong>Paciente:</strong> {consulta.paciente.nome} (CPF:{" "}
+                    {consulta.paciente.cpf}, Cartão SUS:{" "}
+                    {consulta.paciente.cartaoSus})
                   </p>
                 )}
               </div>
