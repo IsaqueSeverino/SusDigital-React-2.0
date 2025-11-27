@@ -1,0 +1,6 @@
+Artur - Relatorio 24/11:
+\\ Dashbord - Minha ideia por enquanto é so questão de ajuste nas telas ja feitas, posicionamento, tamanho da fonte, espaço entre itens
+Na intenção de fazer um padrão de cores e estilo para as demais paginas
+
+\\No final de contas eu so tirei os emojis, emoji pra carai tbm, nem sabia que tinha isso tudo
+* a tentativa de padronizar foi falha, nem entendi no que eu estava mexendo no dashbord
