@@ -23,6 +23,10 @@ import ProntuariosListPage from '@/features/prontuarios/pages/ProntuariosListPag
 
 import DashboardPage from '@/features/dashboard/pages/DashboardPage';
 
+import ExamesListPage from '@/features/exames/pages/ExamesListPage';
+import ConsultasIdPaciente from '@/features/consultas/pages/ConsultasIdPaciente';
+import ProntuariosPacientePage from '@/features/prontuarios/pages/ProntuariosPacientePage';
+
 const router = createBrowserRouter([
 
   {
@@ -111,6 +115,21 @@ const router = createBrowserRouter([
           {
             path: 'prontuarios',
             element: <ProntuariosListPage />,
+          },
+
+          {
+            path: 'meus-exames',
+            element: <ExamesListPage />
+          },
+
+          {
+            path: 'minhas-consultas',
+            element: <ConsultasIdPaciente />
+          },
+
+          {
+            path: 'meus-prontuarios',
+            element: <ProntuariosPacientePage />
           },
         ],
       },

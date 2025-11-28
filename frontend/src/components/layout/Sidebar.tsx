@@ -62,6 +62,21 @@ const Sidebar: React.FC = () => {
             </Link>
           </div>
         )}
+
+        {user?.tipo === "PACIENTE" && (
+          <div className="nav-section">
+            <h3>Minha Área</h3>
+            <Link to="/minhas-consultas" className={`nav-item ${isActive("usuarios")}`}>
+              Minhas consultas
+            </Link>
+            <Link to="/meus-exames" className={`nav-item ${isActive("usuarios")}`}>
+              Meus exames
+            </Link>
+            <Link to="/meus-prontuarios" className={`nav-item ${isActive("usuarios")}`}>
+              Meus prontuários
+            </Link>
+          </div>
+        )}
       </nav>
     </aside>
   );

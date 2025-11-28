@@ -93,10 +93,26 @@ router.get('/', async (req, res) => {
     const exames = await prisma.exame.findMany({
       select: {
         id: true,
-        consulta: true,
-        consultaId: true,
+        tipo: true,
+        nome: true,
         dataExame: true,
- 
+        resultado: true,
+        observacoes: true,
+
+        consulta: {
+          select: {
+            id: true,
+            medicoId: true,
+            medico: {
+              select: {
+                nome: true,
+              }
+            },
+            pacienteId: true,
+            dataHora: true,
+          },
+        },
+
       },
       orderBy: { nome: 'asc' }})
 
@@ -221,8 +237,6 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { consultaId, tipo, nome, dataExame, resultado, observacoes } = req.body;
-
-    // Opcional: verificar se consultaId existe na tabela consulta
 
     const novoExame = await prisma.exame.create({
       data: {

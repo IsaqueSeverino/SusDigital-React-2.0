@@ -13,6 +13,9 @@ export interface Exame {
     id: string;
     dataHora: string;
     medicoId: string;
+    medico?: {
+      nome: string,
+    }
     pacienteId: string;
   };
 }

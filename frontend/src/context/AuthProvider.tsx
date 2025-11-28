@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import { api } from '@/services/api';
-import { User } from '@/types/user.types';
+import { Usuario } from '@/types/user.types';
 import { LoginCredentials, RegisterData, AuthResponse } from '@/types/user.types';
 import { AuthContext, AuthContextData } from './auth.context';
 
@@ -9,7 +9,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

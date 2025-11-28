@@ -80,11 +80,13 @@ router.get('/', async (req, res) => {
     const prontuarios = await prisma.prontuario.findMany({
       select: {
         id: true,
+        pacienteId: true,
         data: true,
         diagnostico: true,
         sintomas: true,
         tratamento: true,
         observacoes: true,
+
       },
 
       orderBy: { data: 'asc' }
