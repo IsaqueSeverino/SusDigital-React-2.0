@@ -4,7 +4,7 @@ import { useDashboard } from "../hooks/useDashboard";
 import { useConsultas } from "@/features/consultas/hooks/useConsultas";
 import { DashboardHeader } from "../../../components/dashboard/DashboardHeader";
 import { DashboardStats } from "../../../components/dashboard/DashboardStats";
-import { ConsultasList } from "@/components/consultas/ConsultasList";
+import { ConsultasList } from "@/components/dashboard/consultas/ConsultasList";
 
 const DashboardPage: React.FC = () => {
   const { stats, loading, error, refetch } = useDashboard();
