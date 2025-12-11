@@ -14,6 +14,7 @@ const agendarSchema = z.object({
   pacienteId: z.string().min(1, "Selecione um paciente"),
   medicoId: z.string().min(1, "Selecione um médico"),
   dataHora: z.string().min(1, "Selecione data e hora"),
+  motivo: z.string().min(1, "Informe o motivo da consulta"),
   observacoes: z.string().optional(),
 });
 
@@ -56,7 +57,8 @@ const AgendarConsultaPage: React.FC = () => {
       await create({
         pacienteId: data.pacienteId,
         medicoId: data.medicoId,
-        dataHora: data.dataHora,
+        dataHora: new Date(data.dataHora).toISOString(),
+        motivo: data.motivo,
         observacoes: data.observacoes,
       });
       navigate("/consultas");
@@ -120,6 +122,20 @@ const AgendarConsultaPage: React.FC = () => {
           />
           {errors.dataHora && (
             <span className="field-error">{errors.dataHora.message}</span>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="motivo">Motivo *</label>
+          <input
+            id="motivo"
+            type="text"
+            placeholder="Ex: Consulta de rotina, Dor de cabeça..."
+            {...register("motivo")}
+            className={errors.motivo ? "input-error" : ""}
+          />
+          {errors.motivo && (
+            <span className="field-error">{errors.motivo.message}</span>
           )}
         </div>
 

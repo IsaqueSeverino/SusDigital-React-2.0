@@ -2,9 +2,9 @@ import React from "react";
 import "../styles/DashboardPage.css";
 import { useDashboard } from "../hooks/useDashboard";
 import { useConsultas } from "@/features/consultas/hooks/useConsultas";
-import { DashboardHeader } from "../../../components/Dashboard/DashboardHeader";
-import { DashboardStats } from "../../../components/Dashboard/DashboardStats";
-import { ConsultasList } from "@/components/Dashboard/consultas/ConsultasList";
+import { DashboardHeader } from "../../../components/dashboard/DashboardHeader";
+import { DashboardStats } from "../../../components/dashboard/DashboardStats";
+import { ConsultasList } from "@/components/dashboard/consultas/ConsultasList";
 
 const DashboardPage: React.FC = () => {
   const { stats, loading, error, refetch } = useDashboard();
@@ -80,7 +80,7 @@ const DashboardPage: React.FC = () => {
         <DashboardHeader lastUpdate={new Date()} />
         <DashboardStats stats={stats} />
 
-        <div className="bg-white rounded-xl shadow-md p-6 lg:p-8 mt-8 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-md p-6 lg:p-8 mt-12 border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Próximas Consultas
           </h2>
