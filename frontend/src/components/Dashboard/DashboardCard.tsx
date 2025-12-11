@@ -1,7 +1,7 @@
 import React from "react";
 
 interface DashboardCardProps {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   value: number;
   label: string;

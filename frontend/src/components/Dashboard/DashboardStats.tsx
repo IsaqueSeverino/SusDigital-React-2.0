@@ -1,6 +1,7 @@
 import React from "react";
 import { DashboardStats as DashboardStatsType } from "../../types/dashboard.types";
 import { DashboardCard } from "./DashboardCard";
+import { User, Stethoscope, Calendar, FileText } from "lucide-react";
 
 interface DashboardStatsProps {
   stats: DashboardStatsType;
@@ -10,7 +11,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats }) => {
   const cardsConfig = [
     {
       type: "pacientes" as const,
-      icon: "",
+      icon: <User size={24} />,
       title: "Pacientes",
       value: stats.pacientes,
       label: "Total de pacientes cadastrados",
@@ -21,7 +22,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats }) => {
     },
     {
       type: "medicos" as const,
-      icon: "",
+      icon: <Stethoscope size={24} />,
       title: "Médicos",
       value: stats.medicos,
       label: "Total de médicos no sistema",
@@ -32,7 +33,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats }) => {
     },
     {
       type: "consultas" as const,
-      icon: "",
+      icon: <Calendar size={24} />,
       title: "Consultas",
       value: stats.consultas,
       label: "Total de consultas registradas",
@@ -43,7 +44,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats }) => {
     },
     {
       type: "prontuarios" as const,
-      icon: "",
+      icon: <FileText size={24} />,
       title: "Prontuários",
       value: stats.prontuarios,
       label: "Total de prontuários arquivados",

@@ -1,6 +1,6 @@
 import React from "react";
 import { useProntuarios } from "../hooks/useProntuarios";
-import "../styles/ProntuariosListPage.css";
+import "../styles/ProntuariosListPage.css"; // pode deixar, não interfere
 
 const ProntuariosListPage: React.FC = () => {
   const { prontuarios, loading, error } = useProntuarios();
@@ -24,9 +24,12 @@ const ProntuariosListPage: React.FC = () => {
           <p>Nenhum prontuário encontrado</p>
         </div>
       ) : (
-        <div className="consultas-list">
+        <div className="consultas-list ">
           {prontuarios.map((prontuario) => (
-            <div key={prontuario.id} className="consulta-item">
+            <div
+              key={prontuario.id}
+              className="consulta-item border border-black p-4 mb-4 last:mb-0 rounded"
+            >
               <div className="consulta-body">
                 <p>
                   <strong>Data:</strong>{" "}
@@ -35,24 +38,28 @@ const ProntuariosListPage: React.FC = () => {
 
                 {prontuario.diagnostico && (
                   <p>
-                    <strong>Diagnostico:</strong> {prontuario.diagnostico}
+                    <strong>Diagnóstico:</strong> {prontuario.diagnostico}
                   </p>
                 )}
+
                 {prontuario.sintomas && (
                   <p>
                     <strong>Sintomas:</strong> {prontuario.sintomas}
                   </p>
                 )}
+
                 {prontuario.tratamento && (
                   <p>
-                    <strong>Tratamento:</strong> {prontuario.tratamento} ( )
+                    <strong>Tratamento:</strong> {prontuario.tratamento}
                   </p>
                 )}
+
                 {prontuario.observacoes && (
                   <p>
                     <strong>Observações:</strong> {prontuario.observacoes}
                   </p>
                 )}
+
                 {prontuario.paciente && (
                   <p>
                     <strong>Paciente:</strong> {prontuario.paciente.nome} (CPF:{" "}

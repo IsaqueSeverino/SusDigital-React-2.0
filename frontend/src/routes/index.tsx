@@ -18,6 +18,7 @@ import MedicosListPage from '@/features/medicos/pages/MedicosListPage';
 import ConsultasIdMedico from '@/features/consultas/pages/ConsultasIdMedico';
 
 import UsuariosListPage from '@/features/usuarios/Pages/UsuariosListPage';
+import ProfilePage from '@/features/usuarios/Pages/ProfilePage';
 
 import ProntuariosListPage from '@/features/prontuarios/pages/ProntuariosListPage';
 
@@ -49,6 +50,11 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <DashboardPage />,
+          },
+
+          {
+            path: 'perfil',
+            element: <ProfilePage />,
           },
 
           {

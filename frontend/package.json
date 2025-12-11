@@ -12,6 +12,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.7.0",
+    "lucide-react": "^0.559.0",
     "path": "^0.12.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

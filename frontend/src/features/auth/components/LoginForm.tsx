@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/useAuth';
-import { LoginCredentials } from '@/types/user.types';
-import { AxiosError } from 'axios';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/useAuth";
+import { LoginCredentials } from "@/types/user.types";
+import { AxiosError } from "axios";
 
 const loginSchema = z.object({
-  email: z.string().email('E-mail inválido').min(1, 'E-mail é obrigatório'),
-  senha: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
+  email: z.string().email("E-mail inválido").min(1, "E-mail é obrigatório"),
+  senha: z.string().min(6, "Senha deve ter no mínimo 6 caracteres"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -26,7 +26,7 @@ interface ApiError {
 export const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -39,18 +39,18 @@ export const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      setError('');
+      setError("");
       setIsLoading(true);
 
       await login(data as LoginCredentials);
-      console.log('Login bem-sucedido');
-      navigate('/');
+      console.log("Login bem-sucedido");
+      navigate("/");
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{ message?: string }>;
       const errorMessage =
         axiosError?.response?.data?.message ||
         (axiosError instanceof Error ? axiosError.message : null) ||
-        'Erro ao fazer login. Tente novamente.';
+        "Erro ao fazer login. Tente novamente.";
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -67,8 +67,8 @@ export const LoginForm: React.FC = () => {
           id="email"
           type="email"
           placeholder="seu@email.com"
-          {...register('email')}
-          className={errors.email ? 'input-error' : ''}
+          {...register("email")}
+          className={errors.email ? "input-error" : ""}
         />
         {errors.email && (
           <span className="field-error">{errors.email.message}</span>
@@ -81,8 +81,8 @@ export const LoginForm: React.FC = () => {
           id="senha"
           type="password"
           placeholder="Sua senha"
-          {...register('senha')}
-          className={errors.senha ? 'input-error' : ''}
+          {...register("senha")}
+          className={errors.senha ? "input-error" : ""}
         />
         {errors.senha && (
           <span className="field-error">{errors.senha.message}</span>
@@ -94,7 +94,7 @@ export const LoginForm: React.FC = () => {
         disabled={isSubmitting || isLoading}
         className="submit-btn"
       >
-        {isSubmitting || isLoading ? '🔄 Entrando...' : '🔓 Entrar'}
+        {isSubmitting || isLoading ? "Entrando..." : "Entrar"}
       </button>
     </form>
   );

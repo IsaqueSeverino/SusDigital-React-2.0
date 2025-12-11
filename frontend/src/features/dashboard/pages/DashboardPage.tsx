@@ -2,9 +2,9 @@ import React from "react";
 import "../styles/DashboardPage.css";
 import { useDashboard } from "../hooks/useDashboard";
 import { useConsultas } from "@/features/consultas/hooks/useConsultas";
-import { DashboardHeader } from "../../../components/dashboard/DashboardHeader";
-import { DashboardStats } from "../../../components/dashboard/DashboardStats";
-import { ConsultasList } from "@/components/dashboard/consultas/ConsultasList";
+import { DashboardHeader } from "../../../components/Dashboard/DashboardHeader";
+import { DashboardStats } from "../../../components/Dashboard/DashboardStats";
+import { ConsultasList } from "@/components/Dashboard/consultas/ConsultasList";
 
 const DashboardPage: React.FC = () => {
   const { stats, loading, error, refetch } = useDashboard();
