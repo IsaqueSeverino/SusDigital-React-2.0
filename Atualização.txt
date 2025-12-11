@@ -8,3 +8,7 @@ Na intenção de fazer um padrão de cores e estilo para as demais paginas
 
 
 *criação de perfil
+
+
+\\Lembrar de fazer o ajuste de na lista de pacientes do medico, igual a do admin
+

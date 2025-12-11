@@ -1,6 +1,7 @@
 import React from "react";
 import { useConsultas } from "../hooks/useConsultas";
 import { Link } from "react-router-dom";
+import { Calendar, Clock, Stethoscope, User, ClipboardList } from "lucide-react";
 import "../styles/ConsultasIdMedico.css";
 
 const ConsultasIdMedico: React.FC = () => {
@@ -19,7 +20,7 @@ const ConsultasIdMedico: React.FC = () => {
   return (
     <div className="consultas-list-page">
       <div className="page-header">
-        <h1>Minhas Consultas</h1>
+        <h1 className="flex items-center gap-2"><ClipboardList /> Minhas Consultas</h1>
         <Link to="/consultas/agendar" className="btn btn-primary">
           Agendar Consulta
         </Link>
@@ -34,7 +35,7 @@ const ConsultasIdMedico: React.FC = () => {
       ) : (
         <div className="consultas-list">
           {minhasConsultas.map((consulta) => (
-            <div key={consulta.id} className="consulta-item">
+            <div key={consulta.id} className="consulta-item border border-gray-200 rounded-xl p-6 mb-4 shadow-sm bg-white">
               <div className="consulta-header">
                 {consulta.status && (
                   <span className={`status ${consulta.status.toLowerCase()}`}>
@@ -43,11 +44,13 @@ const ConsultasIdMedico: React.FC = () => {
                 )}
               </div>
               <div className="consulta-body">
-                <p>
+                <p className="flex items-center gap-2">
+                  <Calendar size={16} />
                   <strong>Data:</strong>{" "}
                   {new Date(consulta.dataHora).toLocaleDateString("pt-BR")}
                 </p>
-                <p>
+                <p className="flex items-center gap-2">
+                  <Clock size={16} />
                   <strong>Hora:</strong>{" "}
                   {new Date(consulta.dataHora).toLocaleTimeString("pt-BR")}
                 </p>
@@ -62,16 +65,22 @@ const ConsultasIdMedico: React.FC = () => {
                   </p>
                 )}
                 {consulta.medico && (
-                  <p>
+                  <p className="flex items-center gap-2">
+                    <Stethoscope size={16} />
+                    <span>
                     <strong>Médico:</strong> {consulta.medico.nome} (
                     {consulta.medico.especialidade}, CRM: {consulta.medico.crm})
+                    </span>
                   </p>
                 )}
                 {consulta.paciente && (
-                  <p>
+                  <p className="flex items-center gap-2">
+                    <User size={16} />
+                    <span>
                     <strong>Paciente:</strong> {consulta.paciente.nome} (CPF:{" "}
                     {consulta.paciente.cpf}, Cartão SUS:{" "}
                     {consulta.paciente.cartaoSus})
+                    </span>
                   </p>
                 )}
               </div>
