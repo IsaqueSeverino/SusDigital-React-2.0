@@ -61,7 +61,6 @@ const AgendarConsultaPage: React.FC = () => {
         motivo: data.motivo,
         observacoes: data.observacoes,
       });
-      navigate("/consultas");
     } catch (err) {
       console.error("Erro ao agendar consulta:", err);
     } finally {
