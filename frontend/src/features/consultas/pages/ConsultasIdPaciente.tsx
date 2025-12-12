@@ -23,10 +23,8 @@ const ConsultasIdPaciente: React.FC = () => {
   const user = userStr ? JSON.parse(userStr) : null;
   const pacienteId = user?.paciente?.id ?? user?.perfil?.id;
 
-  // First, filter by the logged-in patient
   const minhasConsultas = consultas.filter((c) => c.pacienteId === pacienteId);
 
-  // Then allow search/filter within "my consultations"
   const filteredConsultas = minhasConsultas.filter((consulta) => {
     const matchesSearch =
       consulta.medico?.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||

@@ -27,7 +27,7 @@ export const pacientesService = {
   },
 
   search: async (query: string) => {
-    const response = await api.get<Paciente[]>(`/pacientes/search?q=${query}`);
+    const response = await api.get<Paciente[]>(`/pacientes?q=${query}`);
     return response.data;
   },
 };

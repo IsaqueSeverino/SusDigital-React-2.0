@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Search } from "lucide-react";
 import { usePacientes } from "../hooks/usePacientes";
 import "../styles/PacientesListPage.css";
 
 const PacientesListPage: React.FC = () => {
-  const { pacientes, loading, error, search } = usePacientes();
+  const { pacientes, loading, error } = usePacientes();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value;
-    setSearchTerm(term);
-    await search(term);
-  };
+  const filteredPacientes = pacientes.filter((paciente) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      paciente.nome.toLowerCase().includes(term) ||
+      paciente.cpf.includes(term) ||
+      (paciente.email && paciente.email.toLowerCase().includes(term)) ||
+      (paciente.cartaoSus && paciente.cartaoSus.includes(term))
+    );
+  });
 
   if (loading && pacientes.length === 0) {
     return <div className="loading">Carregando pacientes...</div>;
@@ -26,25 +31,27 @@ const PacientesListPage: React.FC = () => {
         </Link>
       </div>
 
-      <div className="search-box">
+      <div className="relative mb-6" style={{paddingBottom: "20px"}}>
+        <Search className="absolute left-3 top-3.5 -translate-y-1/2 text-gray-400" size={20} />
         <input
           type="text"
           placeholder="Buscar por nome, CPF ou email..."
+          style={{paddingLeft: "40px"}}
           value={searchTerm}
-          onChange={handleSearch}
-          className="search-input"
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
         />
       </div>
 
       {error && <div className="error-box">{error}</div>}
 
-      {pacientes.length === 0 ? (
+      {filteredPacientes.length === 0 ? (
         <div className="empty-state">
           <p>Nenhum paciente encontrado</p>
         </div>
       ) : (
         <div className="pacientes-grid">
-          {pacientes.map((paciente) => (
+          {filteredPacientes.map((paciente) => (
             <div key={paciente.id} className="paciente-card">
               <div className="card-header">
                 <h3>{paciente.nome}</h3>
@@ -52,12 +59,6 @@ const PacientesListPage: React.FC = () => {
               <div className="card-body">
                 <p>
                   <strong>CPF:</strong> {paciente.cpf}
-                </p>
-                <p>
-                  <strong>Data de Nascimento:</strong>{" "}
-                  {new Date(paciente.dataNascimento).toLocaleDateString(
-                    "pt-BR"
-                  )}
                 </p>
                 {paciente.telefone && (
                   <p>

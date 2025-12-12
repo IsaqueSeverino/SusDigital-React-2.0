@@ -13,9 +13,10 @@ const pacienteSchema = z.object({
   nome: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
   cpf: z.string().min(11, 'CPF inválido'),
   dataNascimento: z.string().min(1, 'Data de nascimento é obrigatória'),
+  cartaoSus: z.string().optional(),
   telefone: z.string().optional(),
   endereco: z.string().optional(),
-  email: z.string().email().optional().or(z.literal('')),
+  email: z.string().email('Email inválido').optional().or(z.literal('')),
 });
 
 type PacienteFormData = z.infer<typeof pacienteSchema>;
@@ -25,7 +26,7 @@ const PacienteFormPage: React.FC = () => {
   const { id } = useParams();
   const { create, update } = usePacientes();
   const [isLoading, setIsLoading] = useState(false);
-  const [initialData, setInitialData] = useState<Paciente | null>(null);
+  const [pageLoading, setPageLoading] = useState(!!id);
 
   const {
     register,
@@ -36,24 +37,27 @@ const PacienteFormPage: React.FC = () => {
     resolver: zodResolver(pacienteSchema),
   });
 
-  // Carrega dados do paciente se for edição
   useEffect(() => {
     if (id) {
       const loadPaciente = async () => {
         try {
+          setPageLoading(true);
           const data = await pacientesService.getById(id);
-          setInitialData(data);
           reset({
             nome: data.nome,
             cpf: data.cpf,
-            dataNascimento: data.dataNascimento?.toISOString()
-              .split('T')[0], // retorna string YYYY-MM-DD
+            dataNascimento: data.dataNascimento
+              ? new Date(data.dataNascimento).toISOString().split('T')[0]
+              : '',
+            cartaoSus: data.cartaoSus || '',
             telefone: data.telefone || '',
             endereco: data.endereco || '',
             email: data.email || '',
           });
         } catch (err) {
           console.error('Erro ao carregar paciente:', err);
+        } finally {
+          setPageLoading(false);
         }
       };
       loadPaciente();
@@ -76,6 +80,10 @@ const PacienteFormPage: React.FC = () => {
     }
   };
 
+  if (pageLoading) {
+    return <div className="loading">Carregando...</div>;
+  }
+
   return (
     <div className="paciente-form-page">
       <h1>{id ? 'Editar Paciente' : 'Novo Paciente'}</h1>
@@ -93,53 +101,63 @@ const PacienteFormPage: React.FC = () => {
           {errors.nome && <span className="field-error">{errors.nome.message}</span>}
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="cpf">CPF *</label>
-            <input
-              id="cpf"
-              type="text"
-              placeholder="000.000.000-00"
-              {...register('cpf')}
-              className={errors.cpf ? 'input-error' : ''}
-            />
-            {errors.cpf && <span className="field-error">{errors.cpf.message}</span>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="dataNascimento">Data de Nascimento *</label>
-            <input
-              id="dataNascimento"
-              type="date"
-              {...register('dataNascimento')}
-              className={errors.dataNascimento ? 'input-error' : ''}
-            />
-            {errors.dataNascimento && <span className="field-error">{errors.dataNascimento.message}</span>}
-          </div>
+        <div className="form-group">
+          <label htmlFor="cpf">CPF *</label>
+          <input
+            id="cpf"
+            type="text"
+            placeholder="000.000.000-00"
+            {...register('cpf')}
+            className={errors.cpf ? 'input-error' : ''}
+          />
+          {errors.cpf && <span className="field-error">{errors.cpf.message}</span>}
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="email@exemplo.com"
-              {...register('email')}
-              className={errors.email ? 'input-error' : ''}
-            />
-            {errors.email && <span className="field-error">{errors.email.message}</span>}
-          </div>
+        <div className="form-group">
+          <label htmlFor="dataNascimento">Data de Nascimento *</label>
+          <input
+            id="dataNascimento"
+            type="date"
+            {...register('dataNascimento')}
+            className={errors.dataNascimento ? 'input-error' : ''}
+          />
+          {errors.dataNascimento && <span className="field-error">{errors.dataNascimento.message}</span>}
+        </div>
 
-          <div className="form-group">
-            <label htmlFor="telefone">Telefone</label>
-            <input
-              id="telefone"
-              type="tel"
-              placeholder="(11) 99999-9999"
-              {...register('telefone')}
-            />
-          </div>
+        <div className="form-group">
+          <label htmlFor="cartaoSus">Cartão SUS</label>
+          <input
+            id="cartaoSus"
+            type="text"
+            placeholder="000 0000 0000 0000"
+            {...register('cartaoSus')}
+            className={errors.cartaoSus ? 'input-error' : ''}
+          />
+          {errors.cartaoSus && <span className="field-error">{errors.cartaoSus.message}</span>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="email@exemplo.com"
+            {...register('email')}
+            className={errors.email ? 'input-error' : ''}
+          />
+          {errors.email && <span className="field-error">{errors.email.message}</span>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="telefone">Telefone</label>
+          <input
+            id="telefone"
+            type="tel"
+            placeholder="(11) 99999-9999"
+            {...register('telefone')}
+            className={errors.telefone ? 'input-error' : ''}
+          />
+          {errors.telefone && <span className="field-error">{errors.telefone.message}</span>}
         </div>
 
         <div className="form-group">
@@ -149,10 +167,12 @@ const PacienteFormPage: React.FC = () => {
             type="text"
             placeholder="Rua, número, complemento"
             {...register('endereco')}
+            className={errors.endereco ? 'input-error' : ''}
           />
+          {errors.endereco && <span className="field-error">{errors.endereco.message}</span>}
         </div>
 
-        <div className="form-actions">
+        <div className="form-actions" style={{ marginTop: '20px' }}>
           <button
             type="button"
             onClick={() => navigate('/pacientes')}

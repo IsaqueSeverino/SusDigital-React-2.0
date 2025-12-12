@@ -1,8 +1,10 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+import AuthMiddleware from '../middlewares/auth.js';
+
 const prisma = new PrismaClient();
 const router = express.Router();
-import AuthMiddleware from '../middlewares/auth.js';
 
 router.use(AuthMiddleware.authenticate);
 
@@ -82,16 +84,43 @@ router.use(AuthMiddleware.authenticate);
  */
 router.get('/', AuthMiddleware.authorize('ADMIN', 'MEDICO'), async (req, res) => {
   try {
-    const pacientes = await prisma.paciente.findMany({
+    const { q } = req.query;
+
+    const where: any = {};
+    
+    if (q) {
+      const termo = String(q);
+      where.OR = [
+        { nome: { contains: termo, mode: 'insensitive' } },
+        { cpf: { contains: termo } },
+        { cartaoSus: { contains: termo } },
+        { usuario: { email: { contains: termo, mode: 'insensitive' } } }
+      ];
+    }
+
+    const pacientesRaw = await prisma.paciente.findMany({
+      where,
       select: {
         id: true,
         nome: true,
         cpf: true,
         cartaoSus: true,
-        telefone: true
+        telefone: true,
+        dataNascimento: true,
+        usuario: {
+          select: {
+            email: true
+          }
+        }
       },
       orderBy: { nome: 'asc' }
     });
+
+    const pacientes = pacientesRaw.map(p => ({
+      ...p,
+      email: p.usuario?.email,
+      usuario: undefined
+    }));
 
     res.json(pacientes);
   } catch (error) {
@@ -166,9 +195,150 @@ router.get('/:id', AuthMiddleware.authorize('ADMIN', 'MEDICO'), async (req, res)
       return res.status(404).json({ erro: 'Paciente não encontrado' });
     }
 
-    res.json(paciente);
+    res.json({
+        ...paciente,
+        email: paciente.usuario?.email
+    });
   } catch (error) {
     console.error('Erro ao obter paciente:', error);
+    res.status(500).json({ erro: 'Erro interno do servidor' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/pacientes:
+ *   post:
+ *     summary: Criar novo paciente
+ *     description: Cria um novo usuário e o registro de paciente vinculado. Requer perfil ADMIN ou MEDICO.
+ *     tags: [Pacientes]
+ */
+router.post('/', AuthMiddleware.authorize('ADMIN', 'MEDICO'), async (req, res) => {
+  try {
+    const { nome, cpf, dataNascimento, email, telefone, endereco, cartaoSus } = req.body;
+
+    if (!nome || !cpf || !dataNascimento) {
+      return res.status(400).json({ erro: 'Campos obrigatórios: nome, cpf, dataNascimento' });
+    }
+
+    const existingCpf = await prisma.paciente.findUnique({ where: { cpf } });
+    if (existingCpf) {
+      return res.status(400).json({ erro: 'CPF já cadastrado' });
+    }
+
+    if (email) {
+      const existingEmail = await prisma.usuario.findUnique({ where: { email } });
+      if (existingEmail) {
+        return res.status(400).json({ erro: 'Email já cadastrado' });
+      }
+    }
+
+    const hashedPassword = await bcrypt.hash('mudar123', 10);
+    // Se não tiver email, gera um email fictício baseado no CPF para login
+    const userEmail = email || `paciente.${cpf.replace(/\D/g, '')}@sistema.local`;
+
+    const result = await prisma.$transaction(async (tx) => {
+      const usuario = await tx.usuario.create({
+        data: {
+          email: userEmail,
+          senha: hashedPassword,
+          tipo: 'PACIENTE',
+          ativo: true
+        }
+      });
+
+      const paciente = await tx.paciente.create({
+        data: {
+          nome,
+          cpf,
+          dataNascimento: new Date(dataNascimento),
+          telefone,
+          endereco,
+          cartaoSus,
+          usuarioId: usuario.id
+        }
+      });
+
+      return paciente;
+    });
+
+    res.status(201).json(result);
+  } catch (error) {
+    console.error('Erro ao criar paciente:', error);
+    res.status(500).json({ erro: 'Erro interno do servidor' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/pacientes/{id}:
+ *   put:
+ *     summary: Atualizar paciente
+ *     description: Atualiza os dados de um paciente existente. Requer perfil ADMIN ou MEDICO.
+ *     tags: [Pacientes]
+ */
+router.put('/:id', AuthMiddleware.authorize('ADMIN', 'MEDICO'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nome, cpf, dataNascimento, email, telefone, endereco, cartaoSus } = req.body;
+
+    const pacienteExistente = await prisma.paciente.findUnique({ where: { id } });
+    if (!pacienteExistente) {
+      return res.status(404).json({ erro: 'Paciente não encontrado' });
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // 1. Atualizar dados do Paciente
+      await tx.paciente.update({
+        where: { id },
+        data: {
+          nome,
+          cpf,
+          dataNascimento: dataNascimento ? new Date(dataNascimento) : undefined,
+          telefone,
+          endereco,
+          cartaoSus
+        }
+      });
+
+      // 2. Atualizar email do Usuario se fornecido e diferente
+      if (email) {
+        // Verificar se usuário existe para esse paciente
+        if (pacienteExistente.usuarioId) {
+             try {
+                // Tenta atualizar. Se der erro de unique constraint, cai no catch
+                await tx.usuario.update({
+                    where: { id: pacienteExistente.usuarioId },
+                    data: { email }
+                });
+             } catch (e: any) {
+                 // Prisma error code for unique constraint P2002
+                 if (e.code === 'P2002') {
+                    throw new Error('Email já em uso por outro usuário');
+                 }
+                 throw e; 
+             }
+        }
+      }
+    });
+
+    // Retornar dados atualizados
+    const pacienteAtualizado = await prisma.paciente.findUnique({
+         where: { id },
+         include: { usuario: { select: { email: true } } }
+    });
+
+    res.json({
+        ...pacienteAtualizado,
+        email: pacienteAtualizado?.usuario?.email,
+        usuario: undefined
+    });
+
+  } catch (error: any) {
+    console.error('Erro ao atualizar paciente:', error);
+    if (error.message === 'Email já em uso por outro usuário') {
+        return res.status(400).json({ erro: 'Email já em uso' });
+    }
     res.status(500).json({ erro: 'Erro interno do servidor' });
   }
 });
