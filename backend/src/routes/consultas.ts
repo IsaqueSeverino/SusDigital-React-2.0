@@ -71,7 +71,7 @@ import AuthMiddleware from '../middlewares/auth.js';
  */
 router.post(
   '/',
-  AuthMiddleware.authorize('MEDICO', 'ADMIN'),
+  AuthMiddleware.authorize('MEDICO', 'ADMIN', 'PACIENTE'),
   consultaController.criarConsulta
 );
 

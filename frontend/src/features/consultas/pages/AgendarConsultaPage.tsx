@@ -30,20 +30,60 @@ const AgendarConsultaPage: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<AgendarFormData>({
     resolver: zodResolver(agendarSchema),
   });
 
   React.useEffect(() => {
+     const userStr = localStorage.getItem("user");
+     const user = userStr ? JSON.parse(userStr) : null;
+     
+     if (user?.tipo === "PACIENTE") {
+         const pid = user?.paciente?.id || user?.perfil?.id;
+         if(pid) setValue("pacienteId", pid);
+     } else if (user?.tipo === "MEDICO") {
+         const mid = user?.medico?.id || user?.perfil?.id;
+         if(mid) setValue("medicoId", mid);
+     }
+  }, [setValue]);
+
+  React.useEffect(() => {
     const loadData = async () => {
       try {
-        const [medicosData, pacientesData] = await Promise.all([
-          medicosService.getAll(),
-          pacientesService.getAll(),
-        ]);
-        setMedicos(medicosData);
-        setPacientes(pacientesData);
+        const userStr = localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) : null;
+        const isPaciente = user?.tipo === "PACIENTE";
+        const pacienteId = user?.paciente?.id || user?.perfil?.id;
+
+        const isMedico = user?.tipo === "MEDICO";
+        const medicoId = user?.medico?.id || user?.perfil?.id;
+
+        if (isPaciente && pacienteId) {
+          const medicosData = await medicosService.getAll();
+          setMedicos(medicosData);
+          setPacientes([{ id: pacienteId, nome: user.nome || user.perfil?.nome || "Você" } as Paciente]);
+        } else if (isMedico && medicoId) {
+           const pacientesData = await pacientesService.getAll();
+           setPacientes(pacientesData);
+           setMedicos([{
+               id: medicoId,
+               nome: user.nome || user.perfil?.nome || "Você",
+               crm: user.medico?.crm || "",
+               especialidade: user.medico?.especialidade || "",
+               email: user.email || "",
+               criadoEm: new Date(),
+               atualizadoEm: new Date()
+           } as Medico]);
+        } else {
+          const [medicosData, pacientesData] = await Promise.all([
+            medicosService.getAll(),
+            pacientesService.getAll(),
+          ]);
+          setMedicos(medicosData);
+          setPacientes(pacientesData);
+        }
       } catch (err) {
         console.error("Erro ao carregar dados:", err);
       }
