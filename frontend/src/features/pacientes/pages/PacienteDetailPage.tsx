@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { pacientesService } from '../../../services/endpoints/pacientes.service';
 import { Paciente } from '@/types/paciente.types';
@@ -44,9 +45,10 @@ const PacienteDetailPage: React.FC = () => {
 
   return (
     <div className="paciente-detail-page">
-      <button onClick={() => navigate('/pacientes')} className="btn-back">
-        ← Voltar
-      </button>
+      <div className="back-link" onClick={() => navigate('/pacientes')}>
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Voltar
+      </div>
 
       <div className="detail-container">
         <div className="detail-header">

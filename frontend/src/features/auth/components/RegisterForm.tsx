@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Loader2, UserPlus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -155,8 +156,18 @@ export const RegisterForm: React.FC = () => {
         )}
       </div>
 
-      <button type="submit" disabled={isSubmitting} className="submit-btn">
-        {isSubmitting ? '🔄 Registrando...' : 'Registrar'}
+      <button type="submit" disabled={isSubmitting} className="submit-btn flex items-center justify-center gap-2">
+        {isSubmitting ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Registrando...</span>
+          </>
+        ) : (
+          <>
+            <UserPlus className="w-4 h-4" />
+            <span>Registrar</span>
+          </>
+        )}
       </button>
     </form>
   );

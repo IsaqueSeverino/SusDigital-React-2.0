@@ -24,7 +24,7 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
 }) => {
   return (
     <div
-      className={`bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-l-4 ${borderColor} p-6 overflow-hidden relative group`}
+      className={`bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-l-4 ${borderColor} p-8 overflow-hidden relative group`}
     >
       <div
         className={`absolute inset-0 bg-linear-to-br ${bgColor} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
