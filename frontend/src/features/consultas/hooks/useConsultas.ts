@@ -9,6 +9,7 @@ interface UseConsultasReturn {
   refresh: () => Promise<void>;
   create: (data: CreateConsultaData) => Promise<void>;
   update: (id: string, data: UpdateConsultaData) => Promise<void>;
+  remove: (id: string) => Promise<void>;
   getByPaciente: (pacienteId: string, params?: { page?: number; limit?: number }) => Promise<Consulta[]>;
 }
 
@@ -60,6 +61,11 @@ export const useConsultas = (): UseConsultasReturn => {
     return data.consultas ?? [];
   };
 
+  const remove = async (id: string) => {
+    await consultasService.delete(id);
+    await loadConsultas({ page: 1, limit: 100 });
+  };
+
   return {
     consultas,
     loading,
@@ -68,6 +74,7 @@ export const useConsultas = (): UseConsultasReturn => {
     refresh,
     create,
     update,
+    remove,
     getByPaciente,
   };
 };

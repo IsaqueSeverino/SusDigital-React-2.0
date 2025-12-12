@@ -191,7 +191,10 @@ class ConsultaController {
         res.status(403).json({ erro: 'Acesso negado' });
         return;
       }
-      await prisma.consulta.delete({ where: { id } });
+      await prisma.$transaction([
+        prisma.exame.deleteMany({ where: { consultaId: id } }),
+        prisma.consulta.delete({ where: { id } })
+      ]);
       res.json({ message: 'Consulta deletada com sucesso' });
     } catch (error) {
       console.error('Erro ao deletar consulta:', error);
