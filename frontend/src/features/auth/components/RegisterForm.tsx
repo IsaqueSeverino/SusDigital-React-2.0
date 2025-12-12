@@ -156,7 +156,7 @@ export const RegisterForm: React.FC = () => {
       </div>
 
       <button type="submit" disabled={isSubmitting} className="submit-btn">
-        {isSubmitting ? '🔄 Registrando...' : '✅ Registrar'}
+        {isSubmitting ? '🔄 Registrando...' : 'Registrar'}
       </button>
     </form>
   );
