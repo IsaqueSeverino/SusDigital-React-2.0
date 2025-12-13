@@ -1,42 +1,34 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useExames } from "../hooks/useExames";
+import { useProntuarios } from "../hooks/useProntuarios";
 import { 
-  TestTube, 
+  FileText, 
   Search, 
   Plus, 
   Trash2,
   Calendar
 } from "lucide-react";
-import "../styles/ExamesListPage.css";
+import "../styles/ProntuariosMedicoPage.css"; 
 
-const ExamesListPage: React.FC = () => {
-  const { exames, loading, error, deleteExame } = useExames();
+const ProntuariosMedicoPage: React.FC = () => {
+  const { prontuarios, loading, error, deleteProntuario } = useProntuarios();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const userStr = localStorage.getItem("user");
-  const user = userStr ? JSON.parse(userStr) : null;
-  const pacienteId = user?.perfil?.id || user?.paciente?.id;
-
-  const examesFiltrados = exames.filter((exame) => {
-    if (pacienteId && exame.consulta && exame.consulta.pacienteId !== pacienteId && user?.tipo === 'PACIENTE') {
-        return false; 
-    }
-
+  const filteredProntuarios = prontuarios.filter((p) => {
     const term = searchTerm.toLowerCase();
-    const nome = exame.nome?.toLowerCase() || "";
-    const tipo = exame.tipo?.toLowerCase() || "";
-    const medicoNome = exame.consulta?.medico?.nome?.toLowerCase() || "";
+    const nome = p.paciente?.nome?.toLowerCase() || "";
+    const diagnostico = p.diagnostico?.toLowerCase() || "";
+    const sintomas = p.sintomas?.toLowerCase() || "";
     
-    return nome.includes(term) || tipo.includes(term) || medicoNome.includes(term);
+    return nome.includes(term) || diagnostico.includes(term) || sintomas.includes(term);
   });
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Certeza que deseja excluir este exame?")) {
+    if (window.confirm("Certeza que deseja excluir este prontuário?")) {
       try {
-        await deleteExame(id);
+        await deleteProntuario(id);
       } catch (err) {
-        alert("Erro ao excluir exame.");
+        alert("Erro ao excluir prontuário.");
       }
     }
   };
@@ -53,11 +45,19 @@ const ExamesListPage: React.FC = () => {
     <div className="w-full px-6 py-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Exames Laboratoriais</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Prontuários Médicos</h1>
           <p className="text-gray-500 mt-1">
-            Gestão de pedidos e resultados de exames
+            Gestão de históricos e evoluções clínicas
           </p>
         </div>
+        <Link
+          to="/prontuarios/novo"
+          className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm gap-2"
+          style={{ paddingLeft: "25px", paddingRight: "25px", paddingTop: "5px", paddingBottom: "5px" }}
+        >
+          <Plus size={20} />
+          Novo Prontuário
+        </Link>
       </div>
 
       {error && (
@@ -76,7 +76,7 @@ const ExamesListPage: React.FC = () => {
             />
             <input
               type="text"
-              placeholder="Buscar por nome do exame, tipo ou médico..."
+              placeholder="Buscar por paciente, diagnóstico ou sintomas..."
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all outline-none text-gray-700 placeholder-gray-400"
               style={{ paddingLeft: "40px" }}
               value={searchTerm}
@@ -87,16 +87,16 @@ const ExamesListPage: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-xl shadow-xs border border-gray-200 overflow-hidden" style={{ marginTop: "15px"}}>
-        {examesFiltrados.length === 0 ? (
+        {filteredProntuarios.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-4 text-center bg-gray-50/50">
             <div className="bg-gray-100 p-4 rounded-full mb-4">
-              <TestTube className="h-8 w-8 text-gray-400" />
+              <FileText className="h-8 w-8 text-gray-400" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
-              Nenhum exame encontrado
+              Nenhum prontuário encontrado
             </h3>
             <p className="text-gray-500 max-w-md mx-auto">
-              Seus exames e resultados aparecerão aqui.
+              Tente ajustar sua busca ou cadastre um novo registro.
             </p>
           </div>
         ) : (
@@ -105,16 +105,16 @@ const ExamesListPage: React.FC = () => {
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-100">
                   <th className="py-5 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Exame
-                  </th>
-                  <th className="py-5 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Tipo
-                  </th>
-                  <th className="py-5 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Data
                   </th>
                   <th className="py-5 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Resultado
+                    Paciente
+                  </th>
+                  <th className="py-5 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Diagnóstico
+                  </th>
+                  <th className="py-5 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Sintomas
                   </th>
                   <th className="py-5 px-6 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Ações
@@ -122,54 +122,50 @@ const ExamesListPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {examesFiltrados.map((exame) => (
+                {filteredProntuarios.map((prontuario) => (
                   <tr
-                    key={exame.id}
+                    key={prontuario.id}
                     className="hover:bg-gray-50/80 transition-colors group"
                   >
-                    <td className="py-6 px-6">
-                      <div className="flex items-center gap-3">
-                         <div className="h-8 w-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                            <TestTube size={18} />
-                         </div>
-                        <div>
-                          <div className="font-medium text-gray-900">
-                            {exame.nome}
-                          </div>
-                          {exame.consulta?.medico?.nome && (
-                            <div className="text-xs text-gray-500 mt-0.5">
-                              Solicitado por: {exame.consulta.medico.nome}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-6 px-6">
-                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
-                        {exame.tipo}
-                      </span>
-                    </td>
                     <td className="py-6 px-6">
                       <div className="flex items-center gap-2 text-gray-700">
                         <Calendar size={14} className="text-gray-400" />
                         <span className="font-medium">
-                          {new Date(exame.dataExame).toLocaleDateString("pt-BR")}
+                          {new Date(prontuario.data).toLocaleDateString("pt-BR")}
                         </span>
                       </div>
                     </td>
                     <td className="py-6 px-6">
-                      <div className="max-w-[200px] truncate text-gray-600 text-sm" title={exame.resultado}>
-                        {exame.resultado || (
-                          <span className="text-yellow-600 text-xs bg-yellow-50 px-2 py-1 rounded">Pendente</span>
-                        )}
+                      <div className="flex items-center gap-3">
+                         <div className="h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-semibold text-xs">
+                            {prontuario.paciente?.nome?.charAt(0).toUpperCase() || "P"}
+                         </div>
+                        <div>
+                          <div className="font-medium text-gray-900">
+                            {prontuario.paciente?.nome || "Paciente não identificado"}
+                          </div>
+                          <div className="text-xs text-gray-500 mt-0.5">
+                            CNS: {prontuario.paciente?.cartaoSus || "Não informado"}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-6 px-6">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                        {prontuario.diagnostico}
+                      </span>
+                    </td>
+                    <td className="py-6 px-6">
+                      <div className="max-w-[200px] truncate text-gray-600 text-sm" title={prontuario.sintomas}>
+                        {prontuario.sintomas || "—"}
                       </div>
                     </td>
                     <td className="py-6 px-6 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button 
-                          onClick={() => handleDelete(exame.id)}
+                          onClick={() => handleDelete(prontuario.id)}
                           className="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
-                          title="Excluir Exame"
+                          title="Excluir Prontuário"
                         >
                           <Trash2 size={18} />
                         </button>
@@ -186,4 +182,4 @@ const ExamesListPage: React.FC = () => {
   );
 };
 
-export default ExamesListPage;
+export default ProntuariosMedicoPage;

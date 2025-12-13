@@ -20,13 +20,15 @@ import ConsultasIdMedico from '@/features/consultas/pages/ConsultasIdMedico';
 import UsuariosListPage from '@/features/usuarios/Pages/UsuariosListPage';
 import ProfilePage from '@/features/usuarios/Pages/ProfilePage';
 
-import ProntuariosListPage from '@/features/prontuarios/pages/ProntuariosListPage';
+import ProntuariosMedicoPage from "../features/prontuarios/pages/ProntuariosMedicoPage";
 
 import DashboardPage from '@/features/dashboard/pages/DashboardPage';
 
 import ExamesListPage from '@/features/exames/pages/ExamesListPage';
 import ConsultasIdPaciente from '@/features/consultas/pages/ConsultasIdPaciente';
 import ProntuariosPacientePage from '@/features/prontuarios/pages/ProntuariosPacientePage';
+import ExameFormPage from '@/features/exames/pages/ExameFormPage';
+import ProntuarioFormPage from '@/features/prontuarios/pages/ProntuarioFormPage';
 
 const router = createBrowserRouter([
 
@@ -120,7 +122,7 @@ const router = createBrowserRouter([
           
           {
             path: 'prontuarios',
-            element: <ProntuariosListPage />,
+            element: <ProntuariosMedicoPage />,
           },
 
           {
@@ -136,6 +138,14 @@ const router = createBrowserRouter([
           {
             path: 'meus-prontuarios',
             element: <ProntuariosPacientePage />
+          },
+          {
+            path: 'exames/novo',
+            element: <ExameFormPage />
+          },
+          {
+            path: 'prontuarios/novo',
+            element: <ProntuarioFormPage />
           },
         ],
       },

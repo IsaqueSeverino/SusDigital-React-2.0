@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { prontuariosService } from '../../../services/endpoints/prontuarios.service';
+import { pacientesService } from '../../../services/endpoints/pacientes.service';
 import { Prontuario, CreateProntuarioData, UpdateProntuarioData } from '@/types/prontuario.types';
 
 interface UseProntuariosReturn {
@@ -27,8 +28,20 @@ export const useProntuarios = (): UseProntuariosReturn => {
     try {
       setLoading(true);
       setError(null);
-      const data = await prontuariosService.getAll();
-      setProntuarios(data);
+      const [prontuariosData, pacientesData] = await Promise.all([
+        prontuariosService.getAll(),
+        pacientesService.getAll()
+      ]);
+
+      const enrichedProntuarios = prontuariosData.map(prontuario => {
+        const paciente = pacientesData.find(p => p.id === prontuario.pacienteId);
+        return {
+          ...prontuario,
+          paciente: (paciente as any) || prontuario.paciente 
+        };
+      });
+
+      setProntuarios(enrichedProntuarios);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar prontuários';
       setError(errorMessage);

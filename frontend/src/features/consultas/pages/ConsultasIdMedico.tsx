@@ -10,7 +10,9 @@ import {
   Filter, 
   Plus, 
   Trash2,
-  ClipboardList
+  ClipboardList,
+  FileText,
+  TestTube
 } from "lucide-react";
 import "../styles/ConsultasList.css";
 
@@ -226,13 +228,29 @@ const ConsultasIdMedico: React.FC = () => {
                       </div>
                     </td>
                     <td className="py-6 px-6 text-right">
-                      <button 
-                        onClick={() => handleDelete(consulta.id)}
-                        className="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
-                        title="Excluir Consulta"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          to={`/prontuarios/novo?pacienteId=${consulta.pacienteId}`}
+                          className="text-gray-400 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50"
+                          title="Cadastrar Prontuário"
+                        >
+                          <FileText size={18} />
+                        </Link>
+                        <Link
+                          to={`/exames/novo?consultaId=${consulta.id}`}
+                          className="text-gray-400 hover:text-green-600 transition-colors p-2 rounded-lg hover:bg-green-50"
+                          title="Cadastrar Exame"
+                        >
+                          <TestTube size={18} />
+                        </Link>
+                        <button 
+                          onClick={() => handleDelete(consulta.id)}
+                          className="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
+                          title="Excluir Consulta"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
