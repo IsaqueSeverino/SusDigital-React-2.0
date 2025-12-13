@@ -1,4 +1,5 @@
 import React from 'react';
+import { Stethoscope } from 'lucide-react';
 import { medicosService } from '../../../services/endpoints/medicos.service';
 import { Medico } from '@/types/medico.types';
 import '../styles/MedicosListPage.css';
@@ -30,7 +31,10 @@ const MedicosListPage: React.FC = () => {
 
   return (
     <div className="medicos-list-page">
-      <h1>👨‍⚕️ Médicos</h1>
+      <h1 className="flex items-center gap-2">
+        <Stethoscope className="w-5 h-5" />
+        Médicos
+      </h1>
 
       {error && <div className="error-box">{error}</div>}
 

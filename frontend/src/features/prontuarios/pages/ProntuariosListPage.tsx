@@ -28,9 +28,9 @@ const ProntuariosListPage: React.FC = () => {
           {prontuarios.map((prontuario) => (
             <div
               key={prontuario.id}
-              className="consulta-item border border-black p-4 mb-4 last:mb-0 rounded"
+              className="bg-white border-l-4 border-l-gray-300 shadow-sm rounded-lg p-6 mb-6 hover:shadow-md transition-shadow"
             >
-              <div className="consulta-body">
+              <div className="space-y-3 text-gray-600">
                 <p>
                   <strong>Data:</strong>{" "}
                   {new Date(prontuario.data).toLocaleDateString("pt-BR")}
