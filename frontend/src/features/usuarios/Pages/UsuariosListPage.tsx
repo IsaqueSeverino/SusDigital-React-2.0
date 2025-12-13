@@ -1,31 +1,22 @@
-import React from "react";
-import { usuariosService } from "../../../services/endpoints/users.service";
-import { Usuario } from "@/types/user.types";
+import React, { useState } from "react";
+import { useUsers } from "../hooks/useUsuarios";
+import { Trash2 } from "lucide-react";
 import "../styles/UsuariosListPage.css";
 
 const UsuariosListPage: React.FC = () => {
-  const [usuarios, setUsuarios] = React.useState<Usuario[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [filterTipo, setFilterTipo] = React.useState<string>("TODOS");
+  const { users: usuarios, loading, error, deleteUser } = useUsers();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterTipo, setFilterTipo] = useState<string>("TODOS");
 
-  React.useEffect(() => {
-    const loadUsuarios = async () => {
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Tem certeza que deseja excluir este usuário?")) {
       try {
-        setLoading(true);
-        const data = await usuariosService.getAll();
-        setUsuarios(data);
-      } catch (err: unknown) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Erro ao carregar usuários";
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
+        await deleteUser(id);
+      } catch (err) {
+        alert("Erro ao excluir usuário.");
       }
-    };
-    loadUsuarios();
-  }, []);
+    }
+  };
 
   const filteredUsuarios = usuarios.filter((usuario) => {
     const matchesSearch =
@@ -142,6 +133,9 @@ const UsuariosListPage: React.FC = () => {
                 <th scope="col" className="px-6 py-5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
+                <th scope="col" className="px-6 py-5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ações
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -203,11 +197,20 @@ const UsuariosListPage: React.FC = () => {
                         )}
                       </span>
                     </td>
+                    <td className="px-6 py-6 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => handleDelete(usuario.id)}
+                        className="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
+                        title="Excluir Usuário"
+                      >
+                         <Trash2 size={18} />
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center">
+                  <td colSpan={6} className="px-6 py-12 text-center">
                     <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
