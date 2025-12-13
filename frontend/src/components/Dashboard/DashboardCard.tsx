@@ -39,15 +39,19 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
 
         <h3
           className={`text-sm font-bold ${titleColor} uppercase tracking-wide mb-2`}
+          style={{ paddingLeft: '5px' }}
         >
           {title}
         </h3>
 
-        <p className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2 animate-pulse-slow">
+        <p 
+          className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2 animate-pulse-slow"
+          style={{ paddingLeft: '5px' }}
+        >
           {value}
         </p>
 
-        <p className="text-xs lg:text-sm text-gray-500">{label}</p>
+        <p className="text-xs lg:text-sm text-gray-500" style={{ paddingLeft: '5px' }}>{label}</p>
       </div>
     </div>
   );

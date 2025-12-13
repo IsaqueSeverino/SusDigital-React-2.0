@@ -24,13 +24,13 @@ const ProntuariosListPage: React.FC = () => {
           <p>Nenhum prontuário encontrado</p>
         </div>
       ) : (
-        <div className="consultas-list ">
+        <div className="consultas-list" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {prontuarios.map((prontuario) => (
             <div
               key={prontuario.id}
               className="bg-white border-l-4 border-l-gray-300 shadow-sm rounded-lg p-6 mb-6 hover:shadow-md transition-shadow"
             >
-              <div className="space-y-3 text-gray-600">
+              <div className="space-y-3 text-gray-600" style={{ paddingLeft: '10px' }}>
                 <p>
                   <strong>Data:</strong>{" "}
                   {new Date(prontuario.data).toLocaleDateString("pt-BR")}

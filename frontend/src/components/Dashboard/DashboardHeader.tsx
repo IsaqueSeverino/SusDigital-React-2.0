@@ -8,7 +8,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   lastUpdate,
 }) => {
   return (
-    <header className="mb-8 pb-6 border-b-2 border-gray-200">
+    <header className="pb-6 border-b-2 border-gray-200" style={{ marginBottom: '5px' }}>
       <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
         Dashboard
       </h1>
