@@ -27,7 +27,7 @@ export const prontuariosService = {
   },
 
   getByPaciente: async (pacienteId: string): Promise<Prontuario[]> => {
-    const response = await api.get<Prontuario[]>(`/prontuarios/paciente/${pacienteId}`);
-    return response.data;
+    const response = await api.get<Prontuario[]>('/prontuarios', { params: { pacienteId } });
+    return response.data ?? [];
   },
 };

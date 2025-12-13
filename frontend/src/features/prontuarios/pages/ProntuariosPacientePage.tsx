@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { useProntuarios } from "../hooks/useProntuarios";
+import React, { useState, useEffect } from "react";
+import { prontuariosService } from "../../../services/endpoints/prontuarios.service";
+import { Prontuario } from "@/types/prontuario.types";
 import { 
   FileText, 
   Search, 
@@ -9,18 +10,38 @@ import {
 import "../styles/ProntuariosPacientePage.css";
 
 const ProntuariosPacientePage: React.FC = () => {
-  const { prontuarios, loading, error } = useProntuarios();
+  const [prontuarios, setProntuarios] = useState<Prontuario[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const userStr = localStorage.getItem("user");
   const user = userStr ? JSON.parse(userStr) : null;
   const pacienteId = user?.perfil?.id || user?.paciente?.id;
 
-  const meusProntuarios = prontuarios.filter((p) => {
-    if (pacienteId && p.pacienteId !== pacienteId) {
-      return false;
-    }
+  useEffect(() => {
+    const loadProntuarios = async () => {
+      if (!pacienteId) {
+        setLoading(false);
+        return;
+      }
 
+      try {
+        setLoading(true);
+        const data = await prontuariosService.getByPaciente(pacienteId);
+        setProntuarios(data);
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar prontuários';
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProntuarios();
+  }, [pacienteId]);
+
+  const meusProntuarios = prontuarios.filter((p) => {
     const term = searchTerm.toLowerCase();
     const diagnostico = p.diagnostico?.toLowerCase() || "";
     const sintomas = p.sintomas?.toLowerCase() || "";

@@ -76,8 +76,12 @@ router.use(AuthMiddleware.authenticate);
  */
 router.get('/', async (req, res) => {
   try {
+    const { pacienteId } = req.query;
+    
+    const where = pacienteId ? { pacienteId: String(pacienteId) } : {};
 
     const prontuarios = await prisma.prontuario.findMany({
+      where,
       select: {
         id: true,
         pacienteId: true,
@@ -86,10 +90,10 @@ router.get('/', async (req, res) => {
         sintomas: true,
         tratamento: true,
         observacoes: true,
-
+        medicacoes: true
       },
 
-      orderBy: { data: 'asc' }
+      orderBy: { data: 'desc' }
     });
 
     res.json(prontuarios);

@@ -32,7 +32,26 @@ export const consultasService = {
   },
 
   getByPaciente: async (pacienteId: string, { page = 1, limit = 100 } = {}): Promise<ConsultasListResponse> => {
-    const response = await api.get<ConsultasListResponse>(`/consultas/paciente/${pacienteId}`, { params: { page, limit } });
+    // Backend supports filtering by query param
+    const response = await api.get<ConsultasListResponse>('/consultas', { 
+      params: { 
+        pacienteId, 
+        page, 
+        limit 
+      } 
+    });
+    return response.data;
+  },
+
+  getByMedico: async (medicoId: string, { page = 1, limit = 100 } = {}): Promise<ConsultasListResponse> => {
+    // Backend supports filtering by query param
+    const response = await api.get<ConsultasListResponse>('/consultas', { 
+      params: { 
+        medicoId, 
+        page, 
+        limit 
+      } 
+    });
     return response.data;
   },
 };
