@@ -15,6 +15,8 @@ import ConsultasListPage from '@/features/consultas/pages/ConsultasListPage';
 import AgendarConsultaPage from '@/features/consultas/pages/AgendarConsultaPage';
 
 import MedicosListPage from '@/features/medicos/pages/MedicosListPage';
+import MedicoDetailPage from '@/features/medicos/pages/MedicoDetailPage';
+import MedicoFormPage from '@/features/medicos/pages/MedicoFormPage';
 import ConsultasIdMedico from '@/features/consultas/pages/ConsultasIdMedico';
 
 import UsuariosListPage from '@/features/usuarios/Pages/UsuariosListPage';
@@ -100,7 +102,24 @@ const router = createBrowserRouter([
             children: [
               {
                 path: 'medicos',
-                element: <MedicosListPage />,
+                children: [
+                  {
+                    index: true,
+                    element: <MedicosListPage />,
+                  },
+                  {
+                    path: 'novo',
+                    element: <MedicoFormPage />,
+                  },
+                  {
+                    path: ':id',
+                    element: <MedicoDetailPage />,
+                  },
+                  {
+                    path: ':id/editar',
+                    element: <MedicoFormPage />,
+                  },
+                ],
               },
             ],
           },

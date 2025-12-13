@@ -1,50 +1,74 @@
-import React from 'react';
-import { Stethoscope } from 'lucide-react';
-import { medicosService } from '../../../services/endpoints/medicos.service';
-import { Medico } from '@/types/medico.types';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Stethoscope, Search, Trash2, Edit, FileText } from 'lucide-react';
+import { useMedicos } from '../hooks/useMedicos';
 import '../styles/MedicosListPage.css';
 
 const MedicosListPage: React.FC = () => {
-  const [medicos, setMedicos] = React.useState<Medico[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const navigate = useNavigate();
+  const { medicos, loading, error, deleteMedico } = useMedicos();
+  const [searchTerm, setSearchTerm] = useState("");
 
-  React.useEffect(() => {
-    const loadMedicos = async () => {
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Tem certeza que deseja excluir este médico?')) {
       try {
-        setLoading(true);
-        const data = await medicosService.getAll();
-        setMedicos(data);
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar médicos';
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
+        await deleteMedico(id);
+      } catch (error) {
+        alert('Erro ao excluir médico. Verifique se existem consultas vinculadas.');
       }
-    };
-    loadMedicos();
-  }, []);
+    }
+  };
 
-  if (loading) {
-    return <div className="loading">Carregando médicos...</div>;
+  const filteredMedicos = medicos.filter((medico) => {
+    const term = searchTerm.toLowerCase();
+    const nome = medico.nome?.toLowerCase() || "";
+    const especialidade = medico.especialidade?.toLowerCase() || "";
+    const crm = medico.crm || "";
+    
+    return nome.includes(term) || especialidade.includes(term) || crm.includes(term);
+  });
+
+  if (loading && medicos.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
 
   return (
     <div className="medicos-list-page">
-      <h1 className="flex items-center gap-2">
-        <Stethoscope className="w-5 h-5" />
-        Médicos
-      </h1>
+      <div className="page-header">
+        <h1 className="flex items-center gap-2">
+          <Stethoscope className="w-8 h-8" />
+          Médicos
+        </h1>
+        <Link to="/medicos/novo" className="btn btn-primary">
+          Novo Médico
+        </Link>
+      </div>
+
+      <div className="relative mb-6" style={{paddingBottom: "20px"}}>
+        <Search className="absolute left-3 top-3.5 -translate-y-1/2 text-gray-400" size={20} />
+        <input
+          type="text"
+          placeholder="Buscar por nome, CRM ou especialidade..."
+          style={{paddingLeft: "40px"}}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+        />
+      </div>
 
       {error && <div className="error-box">{error}</div>}
 
-      {medicos.length === 0 ? (
+      {filteredMedicos.length === 0 ? (
         <div className="empty-state">
           <p>Nenhum médico encontrado</p>
         </div>
       ) : (
         <div className="medicos-grid">
-          {medicos.map((medico) => (
+          {filteredMedicos.map((medico) => (
             <div key={medico.id} className="medico-card">
               <div className="card-header">
                 <h3>{medico.nome}</h3>
@@ -54,6 +78,29 @@ const MedicosListPage: React.FC = () => {
                 <p><strong>Especialidade:</strong> {medico.especialidade}</p>
                 {medico.telefone && <p><strong>Telefone:</strong> {medico.telefone}</p>}
                 {medico.email && <p><strong>Email:</strong> {medico.email}</p>}
+              </div>
+              <div className="card-footer flex gap-2">
+                <Link
+                   to={`/medicos/${medico.id}`}
+                   className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 gap-2"
+                >
+                  <FileText size={16} />
+                  Detalhes
+                </Link>
+                <button 
+                  onClick={() => navigate(`/medicos/${medico.id}/editar`)}
+                  className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 gap-2"
+                >
+                  <Edit size={16} />
+                  Editar
+                </button>
+                <button 
+                  onClick={() => handleDelete(medico.id)}
+                  className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 gap-2"
+                >
+                  <Trash2 size={16} />
+                  Excluir
+                </button>
               </div>
             </div>
           ))}

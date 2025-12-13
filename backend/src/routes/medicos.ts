@@ -1,5 +1,6 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 const router = express.Router();
 import AuthMiddleware from '../middlewares/auth.js';
@@ -164,9 +165,180 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ erro: 'Médico não encontrado' });
     }
 
-    res.json(medico);
+    res.json({
+        ...medico,
+        email: medico.usuario?.email
+    });
   } catch (error) {
     console.error('Erro ao obter médico:', error);
+    res.status(500).json({ erro: 'Erro interno do servidor' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/medicos:
+ *   post:
+ *     summary: Criar novo médico
+ *     description: Cria um novo usuário e o registro de médico vinculado. Requer perfil ADMIN.
+ *     tags: [Médicos]
+ */
+router.post('/', AuthMiddleware.authorize('ADMIN'), async (req, res) => {
+  try {
+    const { nome, crm, especialidade, telefone, email } = req.body;
+
+    if (!nome || !crm || !especialidade || !email) {
+      return res.status(400).json({ erro: 'Campos obrigatórios: nome, crm, especialidade, email' });
+    }
+
+    const existingCrm = await prisma.medico.findUnique({ where: { crm } });
+    if (existingCrm) {
+      return res.status(400).json({ erro: 'CRM já cadastrado' });
+    }
+
+    const existingEmail = await prisma.usuario.findUnique({ where: { email } });
+    if (existingEmail) {
+      return res.status(400).json({ erro: 'Email já cadastrado' });
+    }
+
+    const hashedPassword = await bcrypt.hash('mudar123', 10);
+
+    const result = await prisma.$transaction(async (tx) => {
+      const usuario = await tx.usuario.create({
+        data: {
+          email,
+          senha: hashedPassword,
+          tipo: 'MEDICO',
+          ativo: true
+        }
+      });
+
+      const medico = await tx.medico.create({
+        data: {
+          nome,
+          crm,
+          especialidade,
+          telefone,
+          usuarioId: usuario.id
+        }
+      });
+
+      return medico;
+    });
+
+    res.status(201).json(result);
+  } catch (error) {
+    console.error('Erro ao criar médico:', error);
+    res.status(500).json({ erro: 'Erro interno do servidor' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/medicos/{id}:
+ *   put:
+ *     summary: Atualizar médico
+ *     description: Atualiza os dados de um médico existente. Requer perfil ADMIN.
+ *     tags: [Médicos]
+ */
+router.put('/:id', AuthMiddleware.authorize('ADMIN'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nome, crm, especialidade, telefone, email } = req.body;
+
+    const medicoExistente = await prisma.medico.findUnique({ where: { id } });
+    if (!medicoExistente) {
+      return res.status(404).json({ erro: 'Médico não encontrado' });
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // 1. Atualizar dados do Médico
+      await tx.medico.update({
+        where: { id },
+        data: {
+          nome,
+          crm,
+          especialidade,
+          telefone
+        }
+      });
+
+      // 2. Atualizar email do Usuario se fornecido e diferente
+      if (email) {
+        if (medicoExistente.usuarioId) {
+             try {
+                await tx.usuario.update({
+                    where: { id: medicoExistente.usuarioId },
+                    data: { email }
+                });
+             } catch (e: any) {
+                 if (e.code === 'P2002') {
+                    throw new Error('Email já em uso por outro usuário');
+                 }
+                 throw e; 
+             }
+        }
+      }
+    });
+
+    const medicoAtualizado = await prisma.medico.findUnique({
+         where: { id },
+         include: { usuario: { select: { email: true } } }
+    });
+
+    res.json({
+        ...medicoAtualizado,
+        email: medicoAtualizado?.usuario?.email,
+        usuario: undefined
+    });
+
+  } catch (error: any) {
+    console.error('Erro ao atualizar médico:', error);
+    if (error.message === 'Email já em uso por outro usuário') {
+        return res.status(400).json({ erro: 'Email já em uso' });
+    }
+    res.status(500).json({ erro: 'Erro interno do servidor' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/medicos/{id}:
+ *   delete:
+ *     summary: Excluir médico
+ *     description: Exclui um médico e seu usuário associado. Não é possível excluir se houver consultas vinculadas. Requer perfil ADMIN.
+ *     tags: [Médicos]
+ */
+router.delete('/:id', AuthMiddleware.authorize('ADMIN'), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const medico = await prisma.medico.findUnique({
+      where: { id },
+      include: { _count: { select: { consultas: true } } }
+    });
+
+    if (!medico) {
+      return res.status(404).json({ erro: 'Médico não encontrado' });
+    }
+
+    if (medico._count.consultas > 0) {
+      return res.status(400).json({ erro: 'Não é possível excluir médico com consultas vinculadas' });
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // 1. Delete Medico
+      await tx.medico.delete({ where: { id } });
+
+      // 2. Delete Usuario
+      if (medico.usuarioId) {
+        await tx.usuario.delete({ where: { id: medico.usuarioId } });
+      }
+    });
+
+    res.status(204).send();
+  } catch (error) {
+    console.error('Erro ao excluir médico:', error);
     res.status(500).json({ erro: 'Erro interno do servidor' });
   }
 });
