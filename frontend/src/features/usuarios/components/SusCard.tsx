@@ -27,7 +27,6 @@ const SusCard: React.FC<SusCardProps> = ({ user }) => {
   const displayRole = user.tipo || 'Nível de acesso desconhecido';
   const displayInitial = displayName.charAt(0).toUpperCase();
 
-  // Helper function for checking user
   const checkUser = (names: string[]) => names.some(identifier => 
     displayName.toLowerCase().includes(identifier) || 
     user.email.toLowerCase().includes(identifier)
