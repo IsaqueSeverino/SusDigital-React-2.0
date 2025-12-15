@@ -47,8 +47,8 @@ export const ConsultasList: React.FC<ConsultasListProps> = ({
 
   if (!consultas || consultas.length === 0)
     return (
-      <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-        <Calendar className="mx-auto h-12 w-12 text-gray-400 mb-2" />
+      <div className="text-center pt-8 pb-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+        <Calendar className="mx-auto h-10 w-10 text-gray-400 mb-2" />
         <p className="text-gray-500 font-medium">Nenhuma consulta agendada.</p>
         <p className="text-xs text-gray-400 mt-1">As próximas consultas aparecerão aqui.</p>
       </div>
@@ -86,7 +86,7 @@ export const ConsultasList: React.FC<ConsultasListProps> = ({
                   
                   <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
                     <div className="flex items-center">
-                      <Calendar size={14} className="mr-1.5 text-gray-400" />
+                      <Calendar size={13} className="mr-1.5 text-gray-400" />
                       {new Date(consulta.dataHora).toLocaleDateString("pt-BR")}
                     </div>
                     <div className="flex items-center">

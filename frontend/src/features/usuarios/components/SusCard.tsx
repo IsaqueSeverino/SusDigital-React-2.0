@@ -33,7 +33,7 @@ const SusCard: React.FC<SusCardProps> = ({ user }) => {
     user.email.toLowerCase().includes(identifier)
   );
 
-  // Group Definitions
+  // Lista especifica de usuarios
   const isRedGroup = checkUser(['bruno', 'luan']);
   const isGreenGroup = checkUser(['isaque', 'warley', 'vitor']);
   

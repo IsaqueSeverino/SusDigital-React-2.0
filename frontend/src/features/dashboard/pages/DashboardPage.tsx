@@ -2,9 +2,9 @@ import React from "react";
 import "../styles/DashboardPage.css";
 import { useDashboard } from "../hooks/useDashboard";
 import { useConsultas } from "@/features/consultas/hooks/useConsultas";
-import { DashboardHeader } from "../../../components/dashboard/DashboardHeader";
-import { DashboardStats } from "../../../components/dashboard/DashboardStats";
-import { ConsultasList } from "@/components/dashboard/consultas/ConsultasList";
+import { DashboardHeader } from "../../../components/Dashboard/DashboardHeader";
+import { DashboardStats } from "../../../components/Dashboard/DashboardStats";
+import { ConsultasList } from "@/components/Dashboard/consultas/ConsultasList";
 import Loading from "@/components/common/Loading";
 
 const DashboardPage: React.FC = () => {
@@ -82,7 +82,7 @@ const DashboardPage: React.FC = () => {
         <DashboardStats stats={stats} />
 
         <div className="bg-white rounded-xl shadow-md p-6 lg:p-8 mt-12 border border-gray-200" style={{ paddingTop: "20px"}}>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ paddingBottom: "20px"}}>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ paddingBottom: "20px", paddingLeft: "5px"}}>
             Próximas Consultas
           </h2>
           <ConsultasList
