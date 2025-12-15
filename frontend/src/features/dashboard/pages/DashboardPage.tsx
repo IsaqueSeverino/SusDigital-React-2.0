@@ -5,6 +5,7 @@ import { useConsultas } from "@/features/consultas/hooks/useConsultas";
 import { DashboardHeader } from "../../../components/dashboard/DashboardHeader";
 import { DashboardStats } from "../../../components/dashboard/DashboardStats";
 import { ConsultasList } from "@/components/dashboard/consultas/ConsultasList";
+import Loading from "@/components/common/Loading";
 
 const DashboardPage: React.FC = () => {
   const { stats, loading, error, refetch } = useDashboard();
@@ -24,14 +25,14 @@ const DashboardPage: React.FC = () => {
     .slice(0, 5);
 
   if (loading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-          <p className="text-gray-600 font-medium">Carregando dashboard...</p>
-        </div>
-      </div>
+      <Loading 
+        className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100" 
+        message="Carregando dashboard..." 
+      />
     );
+  }
   }
 
   if (error) {

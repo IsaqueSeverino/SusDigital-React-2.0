@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
 import { usePacientes } from "../hooks/usePacientes";
 import "../styles/PacientesListPage.css";
+import Loading from "@/components/common/Loading";
 
 const PacientesListPage: React.FC = () => {
   const { pacientes, loading, error } = usePacientes();
@@ -19,7 +20,7 @@ const PacientesListPage: React.FC = () => {
   });
 
   if (loading && pacientes.length === 0) {
-    return <div className="loading">Carregando pacientes...</div>;
+    return <Loading message="Carregando pacientes..." />;
   }
 
   return (

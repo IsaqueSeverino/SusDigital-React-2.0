@@ -21,6 +21,7 @@ import { Paciente } from '@/types/paciente.types';
 import { Consulta } from '@/types/consulta.types';
 import { Prontuario } from '@/types/prontuario.types';
 import '../styles/PacienteDetailPage.css';
+import Loading from '@/components/common/Loading';
 
 const PacienteDetailPage: React.FC = () => {
   const { id } = useParams();
@@ -78,11 +79,9 @@ const PacienteDetailPage: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+  if (loading) {
+    return <Loading className="min-h-screen bg-gray-50" />;
+  }
   }
 
   if (error) {

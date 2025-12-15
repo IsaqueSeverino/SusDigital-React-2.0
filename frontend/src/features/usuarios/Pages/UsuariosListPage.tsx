@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useUsers } from "../hooks/useUsuarios";
 import { Trash2 } from "lucide-react";
 import "../styles/UsuariosListPage.css";
+import Loading from "@/components/common/Loading";
 
 const UsuariosListPage: React.FC = () => {
   const { users: usuarios, loading, error, deleteUser } = useUsers();
@@ -44,11 +45,7 @@ const UsuariosListPage: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <Loading className="h-64" />;
   }
 
   return (

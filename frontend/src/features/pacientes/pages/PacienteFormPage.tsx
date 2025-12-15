@@ -8,6 +8,7 @@ import { Paciente } from '../../../types/paciente.types';
 import { pacientesService } from '../../../services/endpoints/pacientes.service';
 import { CreatePacienteData } from '@/types/paciente.types';
 import '../styles/PacienteFormPage.css';
+import Loading from '@/components/common/Loading';
 
 const pacienteSchema = z.object({
   nome: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
@@ -81,7 +82,7 @@ const PacienteFormPage: React.FC = () => {
   };
 
   if (pageLoading) {
-    return <div className="loading">Carregando...</div>;
+    return <Loading />;
   }
 
   return (

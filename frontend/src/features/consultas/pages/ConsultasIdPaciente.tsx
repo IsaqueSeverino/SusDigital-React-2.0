@@ -13,6 +13,7 @@ import {
   ClipboardList
 } from "lucide-react";
 import "../styles/ConsultasIdPaciente.css";
+import Loading from "@/components/common/Loading";
 
 const ConsultasIdPaciente: React.FC = () => {
   const { consultas, loading, error, remove } = useConsultas();
@@ -62,11 +63,7 @@ const ConsultasIdPaciente: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (

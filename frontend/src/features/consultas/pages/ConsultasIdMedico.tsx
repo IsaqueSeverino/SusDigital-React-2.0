@@ -15,6 +15,7 @@ import {
   TestTube
 } from "lucide-react";
 import "../styles/ConsultasList.css";
+import Loading from "@/components/common/Loading";
 
 const ConsultasIdMedico: React.FC = () => {
   const { consultas, loading, error, remove } = useConsultas();
@@ -65,11 +66,7 @@ const ConsultasIdMedico: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (

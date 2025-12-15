@@ -8,6 +8,7 @@ import {
   Activity
 } from "lucide-react";
 import "../styles/ProntuariosPacientePage.css";
+import Loading from "@/components/common/Loading";
 
 const ProntuariosPacientePage: React.FC = () => {
   const [prontuarios, setProntuarios] = useState<Prontuario[]>([]);
@@ -51,11 +52,7 @@ const ProntuariosPacientePage: React.FC = () => {
   });
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (

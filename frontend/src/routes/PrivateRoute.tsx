@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/context/useAuth';
+import Loading from '@/components/common/Loading';
 
 interface PrivateRouteProps {
   allowedRoles?: Array<'ADMIN' | 'MEDICO' | 'PACIENTE'>;
@@ -12,7 +13,7 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles }) => {
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <div>Carregando...</div>
+        <Loading />
       </div>
     );
   }

@@ -7,6 +7,7 @@ import { useMedicos } from '../hooks/useMedicos';
 import { CreateMedicoData } from '@/types/medico.types';
 import { medicosService } from '../../../services/endpoints/medicos.service';
 import '../styles/MedicoFormPage.css';
+import Loading from '@/components/common/Loading';
 
 const medicoSchema = z.object({
   nome: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
@@ -76,7 +77,7 @@ const MedicoFormPage: React.FC = () => {
   };
 
   if (pageLoading) {
-    return <div className="loading">Carregando...</div>;
+    return <Loading />;
   }
 
   return (
