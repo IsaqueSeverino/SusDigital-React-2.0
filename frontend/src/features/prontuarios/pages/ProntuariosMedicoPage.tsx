@@ -47,14 +47,6 @@ const ProntuariosMedicoPage: React.FC = () => {
             Gestão de históricos e evoluções clínicas
           </p>
         </div>
-        <Link
-          to="/prontuarios/novo"
-          className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm gap-2"
-          style={{ paddingLeft: "25px", paddingRight: "25px", paddingTop: "5px", paddingBottom: "5px" }}
-        >
-          <Plus size={20} />
-          Novo Prontuário
-        </Link>
       </div>
 
       {error && (
