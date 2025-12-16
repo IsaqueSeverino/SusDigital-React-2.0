@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
+import Chatbot from '../common/Chatbot';
 import './MainLayout.css'; 
 
 const MainLayout: React.FC = () => {
@@ -20,6 +21,7 @@ const MainLayout: React.FC = () => {
         </main>
       </div>
       <Footer />
+      <Chatbot />
     </div>
   );
 };
